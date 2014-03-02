@@ -135,7 +135,9 @@ def run():
                     pass
                 else:
                     if event.button == 1:
-                        held = 1
+                        start = pygame.mouse.get_pos()
+                        draw = True
+                
                         if ( pos.x < clip.side.w ) and (pos.y < clip.side.top_rect.h):
                             for L in clip.side.tiles:
                                 for T in L:
@@ -163,7 +165,7 @@ def run():
                             clip.side.update()
             
             if event.type == MOUSEBUTTONUP:
-                held = 0
+                draw = False
                     
             if event.type == KEYDOWN:
                 if event.key == K_F2:
