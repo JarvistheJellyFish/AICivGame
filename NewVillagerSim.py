@@ -258,6 +258,27 @@ def run():
                 blit_pos = world.get_tile_pos(pos-world.background_pos)*32
                 screen.blit(selected_img, ((blit_pos.x-(selected_img.get_width()-32))+world.background_pos.x, (blit_pos.y-(selected_img.get_height()-32))+world.background_pos.y))
         
+        if draw == True and selected_building == None:
+            a = Vector2(*pygame.mouse.get_pos())
+            lst = world.get_tile_array(start,((a.x-start.x)/32,(a.x-start.x)/32))
+            for i in lst:
+                for j in i:
+                    j.selected = 1
+            s = pygame.Surface((abs(a.x-start.x),abs(a.y-start.y)))
+            s.set_alpha(25)
+            s.fill((255,255,255))
+            if  a.x-start.x <=0 and a.y < start.y and a.x > start.x:
+                newa = (a.x-(a.x-start.x),a.y)
+                screen.blit(s,(newa))
+            if  a.x-start.x <= 0 and a.y > start.y and a.x < start.x :
+                newa = (a.x,a.y-(a.y-start.y))
+                screen.blit(s,(newa))
+            if a.x-start.x > 0 and a.y-start.y > 0:
+                screen.blit(s,(start))
+            if a.x-start.x < 0 and a.y-start.y < 0:
+                screen.blit(s,(a))
+            pygame.draw.rect(screen,(255,255,255),(start, (a.x-start.x,a.y-start.y)),1)
+            
         #--------------Render Above------------------------
 
         
