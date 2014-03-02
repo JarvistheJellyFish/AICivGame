@@ -1,0 +1,23 @@
+import pygame
+from pygame.locals import *
+pygame.init()
+ 
+width = 640
+height = 480
+screen_size = width,height
+ 
+screen = pygame.display.set_mode(screen_size)
+
+done = False
+
+while done == False:
+    
+    screen.fill((0,0,0))
+    
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            done = True
+    
+    pygame.display.flip()
+    
+pygame.quit()
