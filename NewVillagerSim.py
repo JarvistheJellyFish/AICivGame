@@ -31,10 +31,10 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 draw = False
 TILE_SIZE = 32 
 
-VILLAGER_COUNT = 0
+VILLAGER_COUNT = 2
 TREE_COUNT = 1000
 FARMER_COUNT = 2
-BUILDER_COUNT = 0.0
+BUILDER_COUNT = 0
 
 
 font = pygame.font.SysFont("Terminal", 20)
