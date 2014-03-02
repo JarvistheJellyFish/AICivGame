@@ -89,7 +89,7 @@ def run():
     bad_lumberyard_img.set_colorkey((255,0,255))
     
     clip = Clips(world, (Owidth, Oheight))
-    pygame.image.save(world.minimap_img, "Images/LargeImages/WaterShadeTest.png")
+    #pygame.image.save(world.minimap_img, "Images/LargeImages/WaterShadeTest.png")
     
     lumber1 = LumberYard(world, lumber_yard_img)
     lumber1.location = Vector2(4*TILE_SIZE, 4*TILE_SIZE)
