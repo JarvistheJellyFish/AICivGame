@@ -28,13 +28,13 @@ from crossfade import CrossFade
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
-
+draw = False
 TILE_SIZE = 32 
 
-VILLAGER_COUNT = 0
+VILLAGER_COUNT = 2
 TREE_COUNT = 1000
 FARMER_COUNT = 2
-BUILDER_COUNT = 0.0
+BUILDER_COUNT = 0
 
 
 font = pygame.font.SysFont("Terminal", 20)
@@ -61,6 +61,7 @@ def run():
     
     fade = CrossFade(screen)
     all_sprites = pygame.sprite.Group(fade)
+    draw = False
     
     #Load the image the world will be based on, then set the world size proportionate to it
     world_img = pygame.image.load("Images/Perlin/SmallMapPerlin.png").convert()
@@ -121,7 +122,6 @@ def run():
     
     world.clock.tick()
     while True:
-        
         time_passed = world.clock.tick(60)
         time_passed_seconds = time_passed/1000.
         pos = Vector2(*pygame.mouse.get_pos())
@@ -135,7 +135,8 @@ def run():
                     pass
                 else:
                     if event.button == 1:
-                        start = pygame.mouse.get_pos()
+                        held = True
+                        start = Vector2(*pygame.mouse.get_pos())
                         draw = True
                 
                         if ( pos.x < clip.side.w ) and (pos.y < clip.side.top_rect.h):
@@ -166,6 +167,7 @@ def run():
             
             if event.type == MOUSEBUTTONUP:
                 draw = False
+                held = False
                     
             if event.type == KEYDOWN:
                 if event.key == K_F2:
@@ -219,9 +221,11 @@ def run():
             
         if pygame.mouse.get_pressed()[0]:
             if pos.x > clip.minimap_rect.x and pos.y > clip.minimap_rect.y:
-                world.background_pos.x = (-1*(pos.x-clip.minimap_rect.x)*clip.a)+(clip.rect_view_w*clip.a)/2
-                world.background_pos.y = (-1*(pos.y-clip.minimap_rect.y)*clip.b)+(clip.rect_view_h*clip.b)/2
-            
+                draw = False
+                if held != True:
+                    world.background_pos.x = (-1*(pos.x-clip.minimap_rect.x)*clip.a)+(clip.rect_view_w*clip.a)/2
+                    world.background_pos.y = (-1*(pos.y-clip.minimap_rect.y)*clip.b)+(clip.rect_view_h*clip.b)/2
+                
 
             
         #--------------Mouse Above---------------------------------------
@@ -240,7 +244,7 @@ def run():
         
         #--------------Process above-------------------------------------
         #--------------Render Below------------------------
-        
+
         screen.fill((0,0,0))
         clip.render(screen, time_passed_seconds, pos)
         
