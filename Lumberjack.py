@@ -130,8 +130,16 @@ class Chopping(State):
             new_tile = TreePlantedTile(self.Lumberjack.world, NoTreeImg)
             new_tile.location = self.Lumberjack.world.get_tile_pos(self.Lumberjack.destination)*32
             new_tile.rect.topleft = new_tile.location
+            
+            old_tile_alpha = self.Lumberjack.world.get_tile(new_tile.location).darkness
+            darkness = pygame.Surface((32,32))
+            darkness.set_alpha(old_tile_alpha)
+            
+            new_tile.darkness = old_tile_alpha
+            new_tile.color = self.Lumberjack.Tree_tile.color
 
             self.Lumberjack.world.background.blit(new_tile.img, new_tile.location)
+            self.Lumberjack.world.background.blit(darkness, new_tile.location)
             self.Lumberjack.world.TileArray[int(new_tile.location.x/32)][int(new_tile.location.y/32)] = new_tile
             self.Lumberjack.hit = 0
             
