@@ -99,7 +99,7 @@ def run():
 
     for Villager_no in xrange(VILLAGER_COUNT):    #Adds all Wood Cutters
 
-        villager = Lumberjack(world, Villager_image)
+        villager = Lumberjack(world, Lumberjack_image)
         villager.location = lumber1.location.copy()
         villager.LastLumberYard = lumber1
         villager.brain.set_state("Searching")
