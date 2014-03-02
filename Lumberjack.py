@@ -24,6 +24,34 @@ class Lumberjack(GameEntity):
         self.brain.add_state(self.chopping_state)
         self.brain.add_state(self.delivering_state)
         
+        self.worldSize = world.size
+        self.TileSize = self.world.TileSize
+        
+        self.ani = ["Images/Entities/Lumberjack.png","Images/Entities/Lumberjack_chop2.png","Images/Entities/Lumberjack_chop3.png","Images/Entities/Lumberjack_chop2.png","Images/Entities/Lumberjack_chop1.png"]
+        self.num = 0
+        self.num_max = len(self.ani)-1
+        self.ani_speed_init = 10
+        self.ani_speed = self.ani_speed_init
+        self.img = pygame.image.load(self.ani[0])
+        self.update()
+        self.hit = 0
+        self.img.set_colorkey((255,0,255))
+
+        
+    def update(self):
+        self.ani_speed -= 1
+        if self.ani_speed == 0:
+            self.image = pygame.image.load(self.ani[self.num]).convert()
+            self.image.set_colorkey((255,0,255))
+            self.ani_speed = self.ani_speed_init
+            if self.num == self.num_max:
+                self.num = 0
+                self.hit += 1
+            else:
+                self.num += 1
+        
+
+        
 class Searching(State):
     """This state will be used to have the Lumberjack looking for
        trees to cut, It needs to be fast enough to have AT LEAST 20 Lumberjacks
@@ -48,7 +76,7 @@ class Searching(State):
         if self.Lumberjack.location.get_distance_to(self.Lumberjack.destination) < 2:
             self.tile_array = self.Lumberjack.world.get_tile_array((self.Lumberjack.location),
                                                                self.Lumberjack.can_see)
-            self.Lumberjack.location = self.Lumberjack.destination
+            self.Lumberjack.location = self.Lumberjack.destination.copy()
             """
             pygame.draw.rect(self.Lumberjack.world.background, (255,255,255), (self.Lumberjack.location.x-(self.Lumberjack.can_see[0]*32),
                                                                                self.Lumberjack.location.y+(self.Lumberjack.can_see[1]*32),
@@ -61,7 +89,7 @@ class Searching(State):
                     
                         if Tile.name == "TreePlantedTile_W":
                             self.Lumberjack.Tree_tile = Tile
-                            self.Lumberjack.destination = Tile.location.copy()
+                            self.Lumberjack.destination = self.Lumberjack.Tree_tile.location.copy()
                             self.Lumberjack.tree_id = Tile.id
                             return "Chopping"
                         
@@ -71,21 +99,12 @@ class Searching(State):
         pass
     
     def random_dest(self):
-        self.Lumberjack.Rand_tile_array = self.Lumberjack.world.get_tile_array((self.Lumberjack.location),
-                                                               (self.Lumberjack.can_see[0]*2, self.Lumberjack.can_see[1]*2))
-        done = False
-        while done == False:
-            try:
-                random_tile_x = randint(0, len(self.Lumberjack.Rand_tile_array)-1)
-                random_tile_y = randint(0, len(self.Lumberjack.Rand_tile_array[0])-1)
-            
-                self.Lumberjack.destination = self.Lumberjack.Rand_tile_array[random_tile_x][random_tile_y].location
-                #print self.Lumberjack.destination, "DESTINATION!!!"
-                if self.Lumberjack.destination.x < 0 or self.Lumberjack.destination.y < 0:
-                    continue
-                done = True
-            except Exception:
-                continue
+        #Function for going to a random destination, currently limited to top 1/12 of the map
+        w,h = self.Lumberjack.worldSize
+        offset = self.Lumberjack.TileSize/2
+        TileSize = self.Lumberjack.TileSize
+        random_dest = (randint(0,12)*TileSize+offset, randint(0,12)*TileSize+offset)
+        self.Lumberjack.destination = Vector2(*random_dest)
     
 class Chopping(State):
     
@@ -100,18 +119,21 @@ class Chopping(State):
         pass
     
     def check_conditions(self):
+        self.Lumberjack.destination = self.Lumberjack.location.copy()
         if self.Lumberjack.Tree_tile.name != "TreePlantedTile_W":
             return "Searching"
         
-        if self.Lumberjack.location.get_distance_to(self.Lumberjack.destination) < 1:
+        self.Lumberjack.update()
+        
+        if self.Lumberjack.location.get_distance_to(self.Lumberjack.destination) == 0 and self.Lumberjack.hit == 4:
             self.Lumberjack.location = self.Lumberjack.destination.copy()
             new_tile = TreePlantedTile(self.Lumberjack.world, NoTreeImg)
             new_tile.location = self.Lumberjack.world.get_tile_pos(self.Lumberjack.destination)*32
             new_tile.rect.topleft = new_tile.location
-            
-            
+
             self.Lumberjack.world.background.blit(new_tile.img, new_tile.location)
-            self.Lumberjack.world.TileArray[int(new_tile.location.x/32)][int(new_tile.location.y/32)]
+            self.Lumberjack.world.TileArray[int(new_tile.location.x/32)][int(new_tile.location.y/32)] = new_tile
+            self.Lumberjack.hit = 0
             
             #del self.Lumberjack.world.TreeLocations[str(self.Lumberjack.tree_id)]
             return "Delivering"
