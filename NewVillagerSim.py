@@ -57,6 +57,8 @@ def run():
     SCREEN_SIZE = sizes[0]
     Owidth, Oheight = SCREEN_SIZE
 
+    side_size = Owidth/5.0
+
     screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN | HWSURFACE, 32)
     
     fade = CrossFade(screen)
