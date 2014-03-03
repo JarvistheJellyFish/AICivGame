@@ -53,7 +53,7 @@ class World(object):        #Class that stores basically EVERYTHING
         
         self.clock = pygame.time.Clock()
         
-        print self.size
+
         self.background = pygame.Surface((self.size[0], self.size[1]), HWSURFACE)
         self.background.fill((255, 255, 255))
         
@@ -356,14 +356,14 @@ class World(object):        #Class that stores basically EVERYTHING
         
         start_tile = self.get_tile_pos(start_pos)
 
-        array = [[None for i in xrange(dimensions[0])] for a in xrange(dimensions[1])]
+        array = [[None for i in xrange((dimensions[0]*2)+1)] for a in xrange((dimensions[1]*2)+1)]
         
-        for i in range(dimensions[0]):
-            for a in range(dimensions[1]):
+        for i in xrange((dimensions[0]*2)+1):
+            for a in xrange((dimensions[1]*2)+1):
                 if start_tile.x+i < 0 or start_tile.y+a < 0:
                     continue
                 
                 else:
-                    array[i][a] = self.TileArray[int(start_tile.x)+i][int(start_tile.y)+a]
-                    
+                    array[a][i] = self.TileArray[int((start_tile.y+a)-1)][int((start_tile.x+i)-1)]
+
         return array
