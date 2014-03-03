@@ -31,9 +31,9 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 draw = False
 TILE_SIZE = 32 
 
-VILLAGER_COUNT = 2
+VILLAGER_COUNT = 3
 TREE_COUNT = 1000
-FARMER_COUNT = 2
+FARMER_COUNT = 3
 BUILDER_COUNT = 0
 
 
@@ -182,6 +182,8 @@ def run():
                     
             if event.type == VIDEORESIZE:
                 Owidth, Oheight = event.size
+        
+            
                     
             
                 
@@ -266,6 +268,8 @@ def run():
         all_sprites.update()
         all_sprites.draw(screen)
         
+        world.grow_trees(world.Baby_TreeLocations)
+        
         if fade.trans_value == 0:
             all_sprites.remove(fade)
 
@@ -287,7 +291,7 @@ def run():
             s = pygame.Surface((abs(a.x-start.x),abs(a.y-start.y)))
             s.set_alpha(25)
             s.fill((255,255,255))
-            if  a.x-start.x <=0 and a.y < start.y and a.x > start.x:
+            if  a.x-start.x >=0 and a.y < start.y and a.x > start.x:
                 newa = (a.x-(a.x-start.x),a.y)
                 screen.blit(s,(newa))
             if  a.x-start.x <= 0 and a.y > start.y and a.x < start.x :
