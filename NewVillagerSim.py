@@ -20,22 +20,22 @@ from Tile import *
 from datetime import datetime
 
 from Lumberjack import *
+from Builder import *
 
 from Clips import *
 
 from crossfade import CrossFade
 
+from GlobRand import random_map
+
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
-draw = False
 TILE_SIZE = 32 
 
-VILLAGER_COUNT = 3
-TREE_COUNT = 1000
-FARMER_COUNT = 3
-BUILDER_COUNT = 0
-
+VILLAGER_COUNT = 0
+FARMER_COUNT = 0
+BUILDER_COUNT = 1
 
 font = pygame.font.SysFont("Terminal", 20)
 
@@ -56,18 +56,29 @@ def run():
     sizes = pygame.display.list_modes()
     SCREEN_SIZE = sizes[0]
     Owidth, Oheight = SCREEN_SIZE
-
+    
     side_size = Owidth/5.0
 
     screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN | HWSURFACE, 32)
     
     fade = CrossFade(screen)
     all_sprites = pygame.sprite.Group(fade)
+    
     draw = False
+    held = False
     
     #Load the image the world will be based on, then set the world size proportionate to it
-    world_img = pygame.image.load("Images/Perlin/SmallMapPerlin.png").convert()
-    mini_img = pygame.image.load("Images/Perlin/SmallMapPerlin2.png").convert()
+    
+    world_img_str, mini_img_str = random_map("SmallMapPerlin")
+    
+    world_img = pygame.image.load(world_img_str).convert()
+    
+    if mini_img_str == None:
+        mini_img = None
+    else:
+        print mini_img_str
+        mini_img = pygame.image.load(mini_img_str).convert()
+        
     size = world_img.get_size()
     w_size = size[0]*TILE_SIZE, size[1]*TILE_SIZE
 
@@ -75,9 +86,10 @@ def run():
     #world.background = me_double_size(world.background)
     
 
-    Villager_image = pygame.image.load("Images/Entities/Villager.png").convert()
+    Villager_image = pygame.image.load("Images/Entities/Villager.PNG").convert()
     Farmer_image = pygame.image.load("Images/Entities/Farmer.png").convert()
     Lumberjack_image = pygame.image.load("Images/Entities/Lumberjack.png").convert()
+    Builder_image = pygame.image.load("Images/Entities/Builder.png").convert()
 
     placing_lumberyard_img = pygame.image.load("Images/Buildings/Dark_LumberYard.png").convert()
     placing_lumberyard_img.set_colorkey((255,0,255))
@@ -88,11 +100,11 @@ def run():
     placing_manor_img = pygame.image.load("Images/Buildings/Dark_Manor.png").convert()
     placing_manor_img.set_colorkey((255,0,255))
     
-    bad_lumberyard_img = pygame.image.load("Images/Buildings/Red_Lumberyard.png").convert()
+    bad_lumberyard_img = pygame.image.load("Images/Buildings/Red_LumberYard.png").convert()
     bad_lumberyard_img.set_colorkey((255,0,255))
     
     clip = Clips(world, (Owidth, Oheight))
-    #pygame.image.save(world.minimap_img, "Images/LargeImages/WaterShadeTest.png")
+    #pygame.image.save(world.background, "Images/BOOM.png")
     
     lumber1 = LumberYard(world, lumber_yard_img)
     lumber1.location = Vector2(4*TILE_SIZE, 4*TILE_SIZE)
@@ -106,6 +118,15 @@ def run():
         villager.LastLumberYard = lumber1
         villager.brain.set_state("Searching")
         world.add_entity(villager)
+        world.population+=1
+        
+    print world.BuildingQueue
+        
+    for Building_no in xrange(BUILDER_COUNT):
+        builder = Builder(world, Builder_image, lumber1)
+        builder.location = lumber1.location.copy()
+        builder.brain.set_state("Idle")
+        world.add_entity(builder)
         world.population+=1
     
 
@@ -124,6 +145,7 @@ def run():
     
     world.clock.tick()
     while True:
+        
         time_passed = world.clock.tick(60)
         time_passed_seconds = time_passed/1000.
         pos = Vector2(*pygame.mouse.get_pos())
@@ -140,7 +162,6 @@ def run():
                         held = True
                         start = Vector2(*pygame.mouse.get_pos())
                         draw = True
-                
                         if ( pos.x < clip.side.w ) and (pos.y < clip.side.top_rect.h):
                             for L in clip.side.tiles:
                                 for T in L:
@@ -163,7 +184,7 @@ def run():
                         
                     if event.button == 3 and selected_building != None:
                         world.add_building(selected_building, pos)
-                        if world.test_buildable(selected_building, pos):
+                        if world.test_buildable(selected_building, 0, pos):
                             selected_building = None
                             clip.side.update()
             
@@ -184,8 +205,6 @@ def run():
                     
             if event.type == VIDEORESIZE:
                 Owidth, Oheight = event.size
-        
-            
                     
             
                 
@@ -202,7 +221,7 @@ def run():
             world.clock_degree+=5
             
         if pressed_keys[K_l]:   #Test to see what the first entity's state is
-            print world.entities[0].brain.active_state, world.degree
+            print world.entities[1].brain.active_state
             
         #--------------Keys Above----------------------------------------
         #--------------Mouse Below---------------------------------------
@@ -210,8 +229,9 @@ def run():
         if int(pos.x) <= 15:
             pygame.mouse.set_pos((15, pos.y))
             world.background_pos.x+=500*time_passed_seconds
-            
+            #print world.background_pos.x
             if world.background_pos.x > side_size:
+
                 world.background_pos.x = side_size
 
             
@@ -221,6 +241,8 @@ def run():
             
             if world.background_pos.x < -1*(world.w-Owidth):
                 world.background_pos.x = -1*(world.w-Owidth)
+            
+            #print world.background_pos.x
             
         if int(pos.y) <= 15:
             pygame.mouse.set_pos((pos.x, 15))
@@ -235,7 +257,6 @@ def run():
             
             if world.background_pos.y < -1*(world.h-Oheight):
                 world.background_pos.y = -1*(world.h-Oheight)
-
             
         if pygame.mouse.get_pressed()[0]:
             if pos.x > clip.minimap_rect.x and pos.y > clip.minimap_rect.y:
@@ -243,7 +264,7 @@ def run():
                 if held != True:
                     world.background_pos.x = (-1*(pos.x-clip.minimap_rect.x)*clip.a)+(clip.rect_view_w*clip.a)/2
                     world.background_pos.y = (-1*(pos.y-clip.minimap_rect.y)*clip.b)+(clip.rect_view_h*clip.b)/2
-                
+            
 
             
         #--------------Mouse Above---------------------------------------
@@ -262,7 +283,7 @@ def run():
         
         #--------------Process above-------------------------------------
         #--------------Render Below------------------------
-
+        
         screen.fill((0,0,0))
         clip.render(screen, time_passed_seconds, pos)
         
@@ -279,11 +300,12 @@ def run():
             if ( pos.x > clip.minimap_rect.x and pos.y > clip.minimap_rect.y ) or ( pos.x < clip.side.w + 32 ):
                 pass
             else:
-                if not world.test_buildable(selected_building, pos):
+                if not world.test_buildable(selected_building, 0, pos):
                     selected_img = bad_lumberyard_img
                 blit_pos = world.get_tile_pos(pos-world.background_pos)*32
                 screen.blit(selected_img, ((blit_pos.x-(selected_img.get_width()-32))+world.background_pos.x, (blit_pos.y-(selected_img.get_height()-32))+world.background_pos.y))
         
+        #This is for selecting-------------        
         if draw == True and selected_building == None:
             a = Vector2(*pygame.mouse.get_pos())
             lst = world.get_tile_array(start,((a.x-start.x)/32,(a.x-start.x)/32))
@@ -293,7 +315,7 @@ def run():
             s = pygame.Surface((abs(a.x-start.x),abs(a.y-start.y)))
             s.set_alpha(25)
             s.fill((255,255,255))
-            if  a.x-start.x >=0 and a.y < start.y and a.x > start.x:
+            if  a.x-start.x <=0 and a.y < start.y and a.x > start.x:
                 newa = (a.x-(a.x-start.x),a.y)
                 screen.blit(s,(newa))
             if  a.x-start.x <= 0 and a.y > start.y and a.x < start.x :
@@ -304,7 +326,8 @@ def run():
             if a.x-start.x < 0 and a.y-start.y < 0:
                 screen.blit(s,(a))
             pygame.draw.rect(screen,(255,255,255),(start, (a.x-start.x,a.y-start.y)),1)
-            
+        #Selecting Above------------------
+        
         #--------------Render Above------------------------
 
         
