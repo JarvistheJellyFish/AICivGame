@@ -207,17 +207,31 @@ def run():
             pygame.mouse.set_pos((15, pos.y))
             world.background_pos.x+=500*time_passed_seconds
             
+            if world.background_pos.x > side_size:
+                world.background_pos.x = side_size
+
+            
         elif int(pos.x) >= Owidth-16:
             pygame.mouse.set_pos((Owidth-16, pos.y))
             world.background_pos.x-=500*time_passed_seconds
+            
+            if world.background_pos.x < -1*(world.w-Owidth):
+                world.background_pos.x = -1*(world.w-Owidth)
             
         if int(pos.y) <= 15:
             pygame.mouse.set_pos((pos.x, 15))
             world.background_pos.y+=500*time_passed_seconds
             
+            if world.background_pos.y > 0:
+                world.background_pos.y = 0
+            
         elif int(pos.y) >= Oheight-16:
             pygame.mouse.set_pos((pos.x, Oheight-16))
             world.background_pos.y-=500*time_passed_seconds
+            
+            if world.background_pos.y < -1*(world.h-Oheight):
+                world.background_pos.y = -1*(world.h-Oheight)
+
             
         if pygame.mouse.get_pressed()[0]:
             if pos.x > clip.minimap_rect.x and pos.y > clip.minimap_rect.y:
