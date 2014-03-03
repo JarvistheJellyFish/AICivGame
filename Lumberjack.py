@@ -1,6 +1,7 @@
 from GameEntity import GameEntity
 from StateMachine import State
 from Tile import *
+from Image_funcs import *
 
 from random import randint
 
@@ -12,6 +13,7 @@ class Lumberjack(GameEntity):
     
     def __init__(self, world, img):
         GameEntity.__init__(self,world,"Lumberjack", img)
+        img_func = image_funcs(18,17)
         
         self.speed = 100.
         self.can_see = (1,1)
@@ -27,22 +29,26 @@ class Lumberjack(GameEntity):
         self.worldSize = world.size
         self.TileSize = self.world.TileSize
         
-        self.ani = ["Images/Entities/Lumberjack.png","Images/Entities/Lumberjack_chop2.png","Images/Entities/Lumberjack_chop3.png","Images/Entities/Lumberjack_chop2.png","Images/Entities/Lumberjack_chop1.png"]
+        self.row = 1
+        self.times = 3
+        self.pic = pygame.image.load("Images/Entities/map.png")
+        self.cells = img_func.get_list(self.pic)
+        self.ani = img_func.get_images(self.cells,self.times,1,1,1,self.row,self.pic)
+        self.start = img_func.get_image(self.cells,1,1,0,self.row,self.pic)
         self.num = 0
         self.num_max = len(self.ani)-1
         self.ani_speed_init = 10
         self.ani_speed = self.ani_speed_init
-        self.img = pygame.image.load(self.ani[0])
+        self.img = self.ani[0]
         self.update()
         self.hit = 0
-        self.img.set_colorkey((255,0,255))
         self.main_des = 0
 
         
     def update(self):
         self.ani_speed -= 1
         if self.ani_speed == 0:
-            self.image = pygame.image.load(self.ani[self.num]).convert()
+            self.image = self.ani[self.num]
             self.image.set_colorkey((255,0,255))
             self.ani_speed = self.ani_speed_init
             if self.num == self.num_max:
@@ -167,7 +173,7 @@ class Chopping(State):
             
             if self.Lumberjack.hit == 4:
                 self.Lumberjack.destination = Vector2(self.Lumberjack.location)
-                self.Lumberjack.image = pygame.image.load(self.Lumberjack.ani[0]).convert()
+                self.Lumberjack.image = self.Lumberjack.start
                 self.Lumberjack.image.set_colorkey((255,0,255))
                 
                 old_tile = self.Lumberjack.world.get_tile(Vector2(self.Lumberjack.location))
@@ -209,15 +215,13 @@ class Delivering(State):
     def entry_actions(self):
 
         des = self.Lumberjack.world.get_close_entity("LumberYard",self.Lumberjack.location, 100)
-        self.Lumberjack.LastLumberYard = des
         if des == None:
             des = self.Lumberjack.world.get_close_entity("LumberYard",self.Lumberjack.location, 300)
-            self.Lumberjack.LastLumberYard = des
             if des == None:
-                print des
                 des = self.Lumberjack.LastLumberYard
-            
-        print des
+        
+        self.Lumberjack.LastLumberYard = des
+                    
         self.Lumberjack.destination = des.location.copy()
     
     def do_actions(self):
