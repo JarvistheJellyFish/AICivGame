@@ -1,10 +1,7 @@
 import pygame
-import operator
 from pygame.locals import *
 
 from math import cos, sin, pi
-
-from random import randint
 
 from vector2 import *
 
@@ -12,12 +9,10 @@ from Tile import *
 
 from Building import *
 
-
-
 grass_img = pygame.image.load("Images/Tiles/MinecraftDarkGrass.png")
-tree_img = pygame.image.load("Images/Tiles/MinecraftGrass.png")
+tree_img = pygame.image.load("Images/Tiles/MinecraftGrass.PNG")
 water_img = pygame.image.load("Images/Tiles/AndrewWater2.png")
-sand_img = pygame.image.load("Images/Tiles/Sand.png")
+sand_img = pygame.image.load("Images/Tiles/Sand.PNG")
 cobble_img = pygame.image.load("Images/Tiles/AndrewCobble2.png")
 SStone_img = pygame.image.load("Images/Tiles/AndrewSmoothStone2.png")
 deepwater_img = pygame.image.load("Images/Tiles/AndrewDeepWater.png")
@@ -27,7 +22,7 @@ WithTree_img = pygame.image.load("Images/Tiles/GrassWithCenterTree.png")
 lumber_yard_img = pygame.image.load("Images/Buildings/LumberYard.png")
 house_img = pygame.image.load("Images/Buildings/House.png")
 uc_house_img = pygame.image.load("Images/Buildings/UC_House.png")
-dock_img = pygame.image.load("Images/Buildings/Dock.png")
+dock_img = pygame.image.load("Images/Buildings/Dock.PNG")
 manor_img = pygame.image.load("Images/Buildings/Manor.png")
 uc_img = pygame.image.load("Images/Buildings/UC.png")
 ucw_img = pygame.image.load("Images/Buildings/UC_Dock.png")
@@ -42,6 +37,7 @@ class World(object):        #Class that stores basically EVERYTHING
         self.w, self.h = self.size  #Certain functions entities need this.
         self.center = Vector2(self.w/2, self.h/2)
         
+        self.building = {}
         self.entities = {}          #Stores all entities the game processes
         self.entity_id = 0          #Each entity is given a unique id so the program can find it
         self.wood = 0               #Probably will add other resources
@@ -58,7 +54,7 @@ class World(object):        #Class that stores basically EVERYTHING
         
         self.clock = pygame.time.Clock()
         
-
+        print self.size
         self.background = pygame.Surface((self.size[0], self.size[1]), HWSURFACE)
         self.background.fill((255, 255, 255))
         
@@ -73,7 +69,10 @@ class World(object):        #Class that stores basically EVERYTHING
         self.convert_all()
         self.new_world(img, img2)
         
-    def new_world(self, img, img2):
+        self.BuildingQueue = []
+        self.buildqueue = 0
+        
+    def new_world(self, img, img2=None):
         self.map_width, self.map_height = img.get_size()
         
         self.minimap_img = pygame.Surface((self.map_width, self.map_height))
@@ -96,8 +95,12 @@ class World(object):        #Class that stores basically EVERYTHING
             self.current_height = 0
             w_last = False
             for a in xrange(self.map_height):
+                
                 color = img.get_at((i,a))[0]
-                color2 = img2.get_at((i,a))[2]
+                
+                if img2 == None: color2 = (255,0,220)
+                else: color2 = img2.get_at((i,a))
+                
                 if color < 95:
                     colorb = 0
                     tile = DeepWaterTile(self, self.deepwater_img)
@@ -120,7 +123,7 @@ class World(object):        #Class that stores basically EVERYTHING
                     
                 elif color >= 160 and color < 170:
                     colorb = 160
-                    if color2 == 220:
+                    if color2[2] == 220:
                         
                         tile = TreePlantedTile_w(self, self.WithTree_img)
                         tile.location = Vector2(i*32, a*32)
@@ -162,14 +165,15 @@ class World(object):        #Class that stores basically EVERYTHING
                     self.current_height-=4
                     dark_surface = pygame.Surface((32,32))
                     dark_surface.set_alpha(128)
+                    
+                if color2[1] == 255:
+                    WORLD_START_POS = (i,a)
         
         
                 tile.location = Vector2(i*32, a*32)
                 tile.rect.topleft = tile.location
                 tile.color = color
                 self.background.blit(tile.img, tile.location)
-                
-            
                 
                 dark_surface2 = pygame.Surface((32, 32))
                 if color >= 190 and color < 236:
@@ -196,24 +200,59 @@ class World(object):        #Class that stores basically EVERYTHING
                 self.TileArray[a][i] = tile
                 
     def add_building(self, building, pos):
-        buildable = self.test_buildable(building, pos)
+        
+        buildable = self.test_buildable(building, 0, pos)
+        print pos
         
         if buildable:
             Build = buildable[1]
             Build.location = self.get_tile_pos(pos-self.background_pos)*32
+            print "LOC: ", Build.location
+            self.add_entity(Build)
+            self.buildings[building]=Build
+            self.BuildingQueue.append(Build)
+            return 1
+        
+    def add_built(self, building, pos):
+        
+        
+        buildable = self.test_buildable(building, 1, pos)
+        print pos
+        
+        if buildable:
+            Build = buildable[1]
+            Build.location = self.get_tile_pos(pos-self.background_pos)*32
+            print "LOC2: ", Build.location
             self.add_entity(Build)
             self.buildings[building]=Build
             return 1
         
-    def test_buildable(self, building, pos):
+    def test_buildable(self, building, built, pos):
+           
         if building == "LumberYard":
-            Build = LumberYard(self, self.uc_img)
+            if built:
+                Build = LumberYard(self, self.lumberyard_img)
+            else:
+                Build = UnderConstruction(self, self.uc_img, "LumberYard")
+                
         elif building == "House":
-            Build = House(self, self.uc_house_img)
+            if built:
+                Build = House(self, self.house_img)
+            else:
+                Build = UnderConstruction(self, self.uc_house_img, "House")
+
         elif building == "Dock":
-            Build = Dock(self, self.ucw_img)
+            if built:
+                Build = Dock(self, self.dock_img)
+            else:
+                Build = UnderConstruction(self, self.ucw_img, "Dock")
+
         elif building == "Manor":
-            Build = Dock(self, self.uc_img)
+            if built:
+                Build = Manor(self, self.manor_img)
+            else:
+                Build = UnderConstruction(self, self.uc_img, "Manor")
+
            
         buildable = 1
         land = 0
@@ -275,23 +314,7 @@ class World(object):        #Class that stores basically EVERYTHING
         self.uc_house_img = uc_house_img.convert()
         self.uc_house_img.set_colorkey((255,0,255))
         
- 
-    def add_entity(self, entity):       #Used to add entities to the world
-        
-        self.entities[self.entity_id] = entity
-        entity.id = self.entity_id
-        self.entity_id += 1
-        
-    def remove_entity(self, entity):    #function for removing an entity
-        del self.entities[entity.id]
-        
-    def remove_tree(self, tree_id):
-        #print len(self.TreeLocations)
-        try:
-            del self.TreeLocations[str(tree_id)]
-            return 0
-        except KeyError:
-            return None
+
     def grow_trees(self,trees):
         for i in trees:
             ran = randint(0,200)
@@ -318,10 +341,24 @@ class World(object):        #Class that stores basically EVERYTHING
                     del self.Baby_TreeLocations[str(old_tile.id)]
                     return 0
                 except KeyError:
-                    return None
-
-                
-            
+                    return None    
+ 
+    def add_entity(self, entity):       #Used to add entities to the world
+        
+        self.entities[self.entity_id] = entity
+        entity.id = self.entity_id
+        self.entity_id += 1
+        
+    def remove_entity(self, entity):    #function for removing an entity
+        del self.entities[entity.id]
+        
+    def remove_tree(self, tree_id):
+        #print len(self.TreeLocations)
+        try:
+            del self.TreeLocations[str(tree_id)]
+            return 0
+        except KeyError:
+            return None
                 
     def get(self, entity_id):           #Return an entity
         
