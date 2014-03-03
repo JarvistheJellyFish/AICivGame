@@ -31,6 +31,28 @@ class Farmer(GameEntity):
         self.worldSize = world.size
         self.TileSize = self.world.TileSize
         
+        self.ani = ["Images/Entities/Farmer_dig1.png","Images/Entities/Farmer_dig2.png","Images/Entities/Farmer_dig3.png","Images/Entities/Farmer_dig4.png","Images/Entities/Farmer_dig5.png","Images/Entities/Farmer_dig6.png"]
+        self.num = 0
+        self.num_max = len(self.ani)-1
+        self.ani_speed_init = 10
+        self.ani_speed = self.ani_speed_init
+        self.img = pygame.image.load(self.ani[0])
+        self.update()
+        self.start_img = "Images/Entities/Farmer.png"
+        self.hit = 0
+        
+    def update(self):
+        self.ani_speed -= 1
+        if self.ani_speed == 0:
+            self.image = pygame.image.load(self.ani[self.num]).convert()
+            self.image.set_colorkey((255,0,255))
+            self.ani_speed = self.ani_speed_init
+            if self.num == self.num_max:
+                self.num = 0
+                self.hit += 1
+            else:
+                self.num += 1
+        
 
     def render(self, surface):
 
@@ -44,50 +66,52 @@ class Farmer_Planting(State):
         self.Farmer = Farmer
         
     def check_conditions(self):
-        pass
-    
-    def do_actions(self):
-        if self.Farmer.location==self.Farmer.destination:
-            #self.random_dest()
-            self.plant_seed()
+        if self.Farmer.location.get_distance_to(self.Farmer.destination) < 2:
+            self.Farmer.destination = Vector2(self.Farmer.location)
+            self.Farmer.update()
             
-        if self.Farmer.location.get_distance_to(self.Farmer.destination) < 1:
-            self.Farmer.destination=self.Farmer.location
+    def do_actions(self):
+        if self.Farmer.location==self.Farmer.destination and self.Farmer.hit == 4 and self.Farmer.world.get_tile(self.Farmer.location).plantable == 1:
+            self.plant_seed()
+        if self.Farmer.location==self.Farmer.destination and self.Farmer.hit != 4 and self.Farmer.world.get_tile(self.Farmer.location).plantable != 1:
+            self.random_dest()
+
             
     def plant_seed(self):
         #Function for planting trees
         
         #Test to see if the tile the farmer is on is a tile that a tree can be planted on
-        if self.Farmer.world.get_tile(self.Farmer.location).plantable == 1:
+        if self.Farmer.world.get_tile(self.Farmer.location).plantable == 1 :
+            self.Farmer.hit = 0
+            self.Farmer.image = pygame.image.load(self.Farmer.start_img).convert()
+            self.Farmer.image.set_colorkey((255,0,255))
             
-            #Create a new tile with a tree class
+            old_tile = self.Farmer.world.get_tile(Vector2(self.Farmer.location))
+                
+            darkness = pygame.Surface((32,32))
+            darkness.set_alpha(old_tile.darkness)
+            
             new_tile = TreePlantedTile_w(self.Farmer.world, Tile_image)
             
-            #Set it's location and set up it's rect
-            new_tile.location = self.Farmer.world.get_tile_pos(self.Farmer.location)*32
+            new_tile.darkness = old_tile.darkness
+            
+            new_tile.location = self.Farmer.world.get_tile_pos(self.Farmer.destination)*32
             new_tile.rect.topleft = new_tile.location
-            
-            old_tile_alpha = self.Farmer.world.get_tile(new_tile.location).darkness
-            darkness = pygame.Surface((32,32))
-            darkness.set_alpha(old_tile_alpha)
-            
-            new_tile.darkness = old_tile_alpha
+            new_tile.color = old_tile.color
             
             #Give it an ID so it can be found
             new_tile.id = self.Farmer.world.TreeID
             self.Farmer.world.TreeID += 1
             
-            #Blit the tile with the tree on it directly to the background
+            self.Farmer.world.TileArray[int(new_tile.location.y/32)][int(new_tile.location.x/32)] = new_tile
             self.Farmer.world.background.blit(new_tile.img, new_tile.location)
             self.Farmer.world.background.blit(darkness, new_tile.location)
-            
-            #Add it to the TileArray so that it can be found
-            self.Farmer.world.TileArray[int(new_tile.location.x/32)][int(new_tile.location.y/32)]
-            
+        
             #Add the location to a dictionary so villagers can see how far they are from it.
             self.Farmer.world.TreeLocations[str(self.Farmer.world.TreeID)] = new_tile.location
 
         #Goes to a random destination no matter what
+        self.Farmer.hit = 0
         self.random_dest()
         
     def random_dest(self):
