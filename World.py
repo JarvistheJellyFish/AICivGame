@@ -1,13 +1,18 @@
 import pygame
+import operator
 from pygame.locals import *
 
 from math import cos, sin, pi
+
+from random import randint
 
 from vector2 import *
 
 from Tile import *
 
 from Building import *
+
+
 
 grass_img = pygame.image.load("Images/Tiles/MinecraftDarkGrass.png")
 tree_img = pygame.image.load("Images/Tiles/MinecraftGrass.png")
@@ -77,6 +82,8 @@ class World(object):        #Class that stores basically EVERYTHING
         
         self.TreeID = 0
         self.TreeLocations  = {}
+        self.Baby_TreeID = 0
+        self.Baby_TreeLocations = {}
         
         self.buildings = {"LumberYard":{},
                           "Dock":{},
@@ -285,6 +292,36 @@ class World(object):        #Class that stores basically EVERYTHING
             return 0
         except KeyError:
             return None
+    def grow_trees(self,trees):
+        for i in trees:
+            ran = randint(0,200)
+            if ran == 20:
+                old_tile = self.get_tile(trees[i])
+                darkness = pygame.Surface((32,32))
+                darkness.set_alpha(old_tile.darkness)
+                
+                new_tile = TreePlantedTile_w(self, WithTree_img)
+                
+                new_tile.darkness = old_tile.darkness
+                
+                new_tile.location = old_tile.location
+                new_tile.rect.topleft = new_tile.location
+                new_tile.color = old_tile.color
+                
+                new_tile.id = self.TreeID
+                self.TreeID += 1
+                
+                self.TileArray[int(new_tile.location.y/32)][int(new_tile.location.x/32)] = new_tile
+                self.background.blit(new_tile.img, new_tile.location)
+                self.background.blit(darkness, new_tile.location)
+                try:
+                    del self.Baby_TreeLocations[str(old_tile.id)]
+                    return 0
+                except KeyError:
+                    return None
+
+                
+            
                 
     def get(self, entity_id):           #Return an entity
         
