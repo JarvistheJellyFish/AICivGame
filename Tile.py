@@ -81,6 +81,13 @@ class TreePlantedTile(Tile):
         self.buildable = 1
         self.plantable = 1
         
+class Baby_Tree(Tile):
+    def __init__(self, world, img):
+        Tile.__init__(self, world, img)
+        self.name = "Baby_Tree"
+        self.walkable = 1
+
+
 class TreePlantedTile_w(Tile):
     def __init__(self, world, img):
         Tile.__init__(self, world, img)
