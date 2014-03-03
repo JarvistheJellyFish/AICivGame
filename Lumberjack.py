@@ -96,40 +96,33 @@ class Searching(State):
                             self.Lumberjack.tree_id = Tile.id
                             if count == 1:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]-32,self.Lumberjack.location[1]-32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 2:
+
+                            elif count == 2:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0],self.Lumberjack.location[1]-32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 3:
+
+                            elif count == 3:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]+32,self.Lumberjack.location[1]-32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 4:
+
+                            elif count == 4:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]-32,self.Lumberjack.location[1])
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 5:
+
+                            elif count == 5:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0],self.Lumberjack.location[1])
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 6:
+
+                            elif count == 6:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]+32,self.Lumberjack.location[1])
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 7:
+
+                            elif count == 7:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]-32,self.Lumberjack.location[1]+32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 8:
+
+                            elif count == 8:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0],self.Lumberjack.location[1]+32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
-                            if count == 9:
+
+                            elif count == 9:
                                 self.Lumberjack.destination = (self.Lumberjack.location[0]+32,self.Lumberjack.location[1]+32)
-                                self.Lumberjack.main_des = self.Lumberjack.destination
-                                return "Chopping"
+                                
+                            self.Lumberjack.main_des = self.Lumberjack.destination
+                            return "Chopping"
 
                                 
                             
