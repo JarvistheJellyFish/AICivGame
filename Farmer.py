@@ -4,17 +4,19 @@ from GameEntity import *
 from vector2 import *
 from Entities import *
 from Tile import *
+from Image_funcs import *
 
 from random import *
 
 import pygame
 
-Tile_image = pygame.image.load("Images/Tiles/GrassWithCenterTree.png")
+Tile_image = pygame.image.load("Images/Tiles/Baby_Tree.png")
 
 class Farmer(GameEntity):
     
     def __init__(self, world, image):
         GameEntity.__init__(self, world, "Farmer", image)
+        img_func = image_funcs(18,17)
         
         planting_state = Farmer_Planting(self)
 #         exploring_state = Farmer_Exploring(self)
@@ -31,20 +33,24 @@ class Farmer(GameEntity):
         self.worldSize = world.size
         self.TileSize = self.world.TileSize
         
-        self.ani = ["Images/Entities/Farmer_dig1.png","Images/Entities/Farmer_dig2.png","Images/Entities/Farmer_dig3.png","Images/Entities/Farmer_dig4.png","Images/Entities/Farmer_dig5.png","Images/Entities/Farmer_dig6.png"]
+        self.row = 0
+        self.times = 6
+        self.pic = pygame.image.load("Images/Entities/map.png")
+        self.cells = img_func.get_list(self.pic)
+        self.ani = img_func.get_images(self.cells,self.times,1,1,1,self.row,self.pic)
+        self.start = img_func.get_image(self.cells,1,1,0,self.row,self.pic)
         self.num = 0
+        self.img = self.ani[0]
         self.num_max = len(self.ani)-1
         self.ani_speed_init = 10
         self.ani_speed = self.ani_speed_init
-        self.img = pygame.image.load(self.ani[0])
         self.update()
-        self.start_img = "Images/Entities/Farmer.png"
         self.hit = 0
         
     def update(self):
         self.ani_speed -= 1
         if self.ani_speed == 0:
-            self.image = pygame.image.load(self.ani[self.num]).convert()
+            self.image = self.ani[self.num]
             self.image.set_colorkey((255,0,255))
             self.ani_speed = self.ani_speed_init
             if self.num == self.num_max:
@@ -83,7 +89,7 @@ class Farmer_Planting(State):
         #Test to see if the tile the farmer is on is a tile that a tree can be planted on
         if self.Farmer.world.get_tile(self.Farmer.location).plantable == 1 :
             self.Farmer.hit = 0
-            self.Farmer.image = pygame.image.load(self.Farmer.start_img).convert()
+            self.Farmer.image = self.Farmer.start
             self.Farmer.image.set_colorkey((255,0,255))
             
             old_tile = self.Farmer.world.get_tile(Vector2(self.Farmer.location))
@@ -91,7 +97,7 @@ class Farmer_Planting(State):
             darkness = pygame.Surface((32,32))
             darkness.set_alpha(old_tile.darkness)
             
-            new_tile = TreePlantedTile_w(self.Farmer.world, Tile_image)
+            new_tile = Baby_Tree(self.Farmer.world, Tile_image)
             
             new_tile.darkness = old_tile.darkness
             
@@ -100,15 +106,15 @@ class Farmer_Planting(State):
             new_tile.color = old_tile.color
             
             #Give it an ID so it can be found
-            new_tile.id = self.Farmer.world.TreeID
-            self.Farmer.world.TreeID += 1
+            new_tile.id = self.Farmer.world.Baby_TreeID
+            self.Farmer.world.Baby_TreeID += 1
             
             self.Farmer.world.TileArray[int(new_tile.location.y/32)][int(new_tile.location.x/32)] = new_tile
             self.Farmer.world.background.blit(new_tile.img, new_tile.location)
             self.Farmer.world.background.blit(darkness, new_tile.location)
         
             #Add the location to a dictionary so villagers can see how far they are from it.
-            self.Farmer.world.TreeLocations[str(self.Farmer.world.TreeID)] = new_tile.location
+            self.Farmer.world.Baby_TreeLocations[str(self.Farmer.world.Baby_TreeID)] = new_tile.location
 
         #Goes to a random destination no matter what
         self.Farmer.hit = 0
