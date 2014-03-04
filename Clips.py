@@ -27,14 +27,14 @@ class Clips:
     def __init__(self, world, Osizes):
         self.size = Osizes
         self.world = world
-        self.minimap_size = 350,350
+        self.minimap_size = 300,300
         self.minimap = pygame.transform.scale(self.world.minimap_img, self.minimap_size)
         
         self.a = self.world.w/float(self.minimap_size[0])
         self.b = self.world.h/float(self.minimap_size[1])
         
         
-        self.rect_view_w = self.size[0]/self.a
+        self.rect_view_w = (self.size[0]/self.a)-((self.size[0]/self.a)/5)
         self.rect_view_h = self.size[1]/self.b
         
         self.minimap_rect = pygame.Rect(self.size[0]-self.minimap_size[0],self.size[1]-self.minimap_size[1], self.minimap_size[0], self.minimap_size[1])
@@ -43,7 +43,7 @@ class Clips:
        
     def render(self, surface, tp, mouse_pos):
 
-        self.rect_view_pos = ((-1*self.world.background_pos.x/self.a)+self.size[0]-self.minimap_size[0],
+        self.rect_view_pos = ((-1*self.world.background_pos.x/self.a)+self.size[0]-self.minimap_size[0]+((self.size[0]/5)/self.a),
                               (-1*self.world.background_pos.y/self.b)+self.size[1]-self.minimap_size[1])
         
         self.rect_view = (self.rect_view_pos, (self.rect_view_w, self.rect_view_h))
@@ -153,7 +153,7 @@ class sidebar():
         try:
             height = "HEIGHT: " + str(self.world.get_tile(mouse_pos-self.world.background_pos).color)
             name = "NAME: " + str(self.world.get_tile(mouse_pos-self.world.background_pos).name)
-        except Exception:
+        except IndexError:
             height = "NULL"
             name = "NULL"
         
@@ -162,7 +162,7 @@ class sidebar():
         wood = "WOOD: %d"%self.world.wood
         population = "POPULATION: %d/%d"%(self.world.population,self.world.MAXpopulation)
         
-        
+        pos_str = "%.0f, %.0f"%(mouse_pos.x, mouse_pos.y)
             
         rendered_height = self.world.font.render(height, True, (255,255,255))
         rendered_name = self.world.font.render(name, True, (255,255,255))
@@ -170,17 +170,17 @@ class sidebar():
         rendered_food = self.world.font.render(food, True, (255,255,255))
         rendered_wood = self.world.font.render(wood, True, (255,255,255))
         rendered_population = self.world.font.render(population, True, (255,255,255))
-        
-        
-        surface.blit(rendered_height, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+15))
-        surface.blit(rendered_name, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+40))
-        surface.blit(rendered_fps, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+65))
-        surface.blit(rendered_food, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+90))
-        surface.blit(rendered_wood, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+115))
-        surface.blit(rendered_population, (self.mid_rect.topleft[0]+5, self.mid_rect.topleft[1]+140))
-        
+        rendered_pos_str = self.world.font.render(pos_str, True, (255,255,255))
         
         pygame.draw.rect(surface, self.outline, self.bottom_rect,4)
+        
+        surface.blit(rendered_height, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+15))
+        surface.blit(rendered_name, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+40))
+        surface.blit(rendered_fps, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+65))
+        surface.blit(rendered_food, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+90))
+        surface.blit(rendered_wood, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+115))
+        surface.blit(rendered_population, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+140))
+        surface.blit(rendered_pos_str, (self.bottom_rect.topleft[0]+5, self.bottom_rect.topleft[1]+165))
         
         pygame.draw.rect(surface, self.outline,(0,0,self.w,self.h),4)
         
