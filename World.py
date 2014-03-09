@@ -221,7 +221,7 @@ class World(object):        #Class that stores basically EVERYTHING
         
         if buildable:
             Build = buildable[1]
-            Build.location = self.get_tile_pos(pos-self.background_pos)*32
+            Build.location = pos.copy()
             print "LOC2: ", Build.location
             self.add_entity(Build)
             self.buildings[building]=Build
@@ -262,7 +262,10 @@ class World(object):        #Class that stores basically EVERYTHING
         for i in range(Twidth/32):
             for j in range(Theight/32):
                 try:
-                    test_tile = self.get_tile(Vector2(((pos.x-32)-self.background_pos.x)+i*32, ((pos.y-32)-self.background_pos.y)+j*32))
+                    if Built:
+                        test_tile = self.get_tile(Vector2((pos.x-32)+i*32, (pos.y-32)+j*32))
+                    else:
+                        test_tile = self.get_tile(Vector2(((pos.x-32)-self.background_pos.x)+i*32, ((pos.y-32)-self.background_pos.y)+j*32))
                     
                     if test_tile.buildable!=1 and building!="Dock":
                         buildable = 0
