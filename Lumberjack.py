@@ -28,7 +28,7 @@ class Lumberjack(GameEntity):
         
         self.worldSize = world.size
         self.TileSize = self.world.TileSize
-        
+
         self.row = 1
         self.times = 3
         self.pic = pygame.image.load("Images/Entities/map.png")
