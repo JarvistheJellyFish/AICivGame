@@ -31,8 +31,4 @@ class image_funcs():
             lst.append(self.get_image(cells, width2, height, xpos, ypos, pic))
             xpos+=width2
                         
-<<<<<<< HEAD
         return lst
-=======
-        return lst
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
