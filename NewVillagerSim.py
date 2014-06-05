@@ -26,29 +26,18 @@ from Clips import *
 
 from crossfade import CrossFade
 
-<<<<<<< HEAD
 #from GlobRand import random_map
 
 from VoronoiMapGen import point, mapGen
 from random import randint
-=======
-from GlobRand import random_map
-
-os.environ['SDL_VIDEO_CENTERED'] = '1'
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
-<<<<<<< HEAD
 TILE_SIZE = 32 
 
 VILLAGER_COUNT = 15
 FARMER_COUNT = 45
-=======
-VILLAGER_COUNT = 0
-FARMER_COUNT = 0
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
 BUILDER_COUNT = 1
 
 font = pygame.font.SysFont("Terminal", 20)
@@ -74,11 +63,8 @@ def run():
     Owidth, Oheight = SCREEN_SIZE
     
     side_size = Owidth/5.0
-<<<<<<< HEAD
 
     mapGenerator = mapGen()
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
 
     if FULL_ON:
         screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN | HWSURFACE, 32)
@@ -93,7 +79,6 @@ def run():
     
     #Load the image the world will be based on, then set the world size proportionate to it
     
-<<<<<<< HEAD
     #world_img_str, mini_img_str = random_map("SCREENSHOT", "*")
     #world_img = pygame.image.load(world_img_str).convert()
     
@@ -101,19 +86,6 @@ def run():
     #world_img = mapGenerator.whole_new(25, (256,256))
     
     size = (256,256)
-=======
-    world_img_str, mini_img_str = random_map("SmallMapPerlin")
-    
-    world_img = pygame.image.load(world_img_str).convert()
-    
-    if mini_img_str == None:
-        mini_img = None
-    else:
-        print mini_img_str
-        mini_img = pygame.image.load(mini_img_str).convert()
-        
-    size = world_img.get_size()
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
     w_size = size[0]*TILE_SIZE, size[1]*TILE_SIZE
 
     seed = randint(0,100)
@@ -140,48 +112,12 @@ def run():
     bad_lumberyard_img = pygame.image.load("Images/Buildings/Red_LumberYard.png").convert()
     bad_lumberyard_img.set_colorkey((255,0,255))
     
-<<<<<<< HEAD
     #pygame.image.save(me_double_size(pygame.image.load("Images/Buildings/LumberYard_Icon.png").convert()), "LARGERLumb.png")
     #pygame.image.save(me_double_size(pygame.image.load("Images/Buildings/Manor_Icon.png").convert()), "LARGERMan.png")
     
     world.clipper = Clips(world, (Owidth, Oheight))
     #pygame.image.save(world.background, "Images/VeryLargeShowingOff.png")
     #pygame.image.save(world.minimap_img, "Images/SmallAndVariety2.png")
-=======
-    clip = Clips(world, (Owidth, Oheight))
-    #pygame.image.save(world.background, "Images/BOOM.png")
-    
-    lumber1 = LumberYard(world, lumber_yard_img)
-    lumber1.location = Vector2(4*TILE_SIZE, 4*TILE_SIZE)
-    lumber1.tile_x, lumber1.tile_y = 4,4
-    world.add_entity(lumber1)
-
-    for Villager_no in xrange(VILLAGER_COUNT):    #Adds all Wood Cutters
-
-        villager = Lumberjack(world, Lumberjack_image)
-        villager.location = lumber1.location.copy()
-        villager.LastLumberYard = lumber1
-        villager.brain.set_state("Searching")
-        world.add_entity(villager)
-        world.population+=1
-        
-    print world.BuildingQueue
-        
-    for Building_no in xrange(BUILDER_COUNT):
-        builder = Builder(world, Builder_image, lumber1)
-        builder.location = lumber1.location.copy()
-        builder.brain.set_state("Idle")
-        world.add_entity(builder)
-        world.population+=1
-    
-
-    for FARMER in xrange(FARMER_COUNT):     #Adds all the farmers
-        farmer = Farmer(world, Farmer_image)
-        farmer.location = Vector2(20,20)
-        farmer.brain.set_state("Planting")
-        world.add_entity(farmer)
-        world.population+=1
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
     
     selected_building = "LumberYard"
     selected_img = pygame.image.load("Images/Buildings/Dark_LumberYard.png").convert()
@@ -206,13 +142,8 @@ def run():
                         held = True
                         start = Vector2(*pygame.mouse.get_pos())
                         draw = True
-<<<<<<< HEAD
                         if ( pos.x < world.clipper.side.w ) and (pos.y < world.clipper.side.top_rect.h):
                             for L in world.clipper.side.tiles:
-=======
-                        if ( pos.x < clip.side.w ) and (pos.y < clip.side.top_rect.h):
-                            for L in clip.side.tiles:
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                                 for T in L:
                                     if T == None:
                                         continue
@@ -292,10 +223,7 @@ def run():
                 pygame.mouse.set_pos((Owidth-16, pos.y))
             world.background_pos.x-=500*time_passed_seconds
             
-<<<<<<< HEAD
             
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
             if world.background_pos.x < -1*(world.w-Owidth):
                 world.background_pos.x = -1*(world.w-Owidth)
             
@@ -306,10 +234,7 @@ def run():
                 pygame.mouse.set_pos((pos.x, 15))
             world.background_pos.y+=500*time_passed_seconds
             
-<<<<<<< HEAD
             
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
             if world.background_pos.y > 0:
                 world.background_pos.y = 0
             
@@ -324,19 +249,11 @@ def run():
                 world.background_pos.y = -1*(world.h-Oheight)
             
         if pygame.mouse.get_pressed()[0]:
-<<<<<<< HEAD
             if pos.x > world.clipper.minimap_rect.x and pos.y > world.clipper.minimap_rect.y:
                 draw = False
                 if held != True:
                     world.background_pos.x = (-1*(pos.x-world.clipper.minimap_rect.x)*world.clipper.a)+(world.clipper.rect_view_w*world.clipper.a)/2
                     world.background_pos.y = (-1*(pos.y-world.clipper.minimap_rect.y)*world.clipper.b)+(world.clipper.rect_view_h*world.clipper.b)/2
-=======
-            if pos.x > clip.minimap_rect.x and pos.y > clip.minimap_rect.y:
-                draw = False
-                if held != True:
-                    world.background_pos.x = (-1*(pos.x-clip.minimap_rect.x)*clip.a)+(clip.rect_view_w*clip.a)/2
-                    world.background_pos.y = (-1*(pos.y-clip.minimap_rect.y)*clip.b)+(clip.rect_view_h*clip.b)/2
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
             
 
             
