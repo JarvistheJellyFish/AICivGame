@@ -32,7 +32,7 @@ WithTree_img = pygame.image.load("Images/Tiles/GrassWithCenterTree.png")
 lumber_yard_img = pygame.image.load("Images/Buildings/LumberYard.png")
 house_img = pygame.image.load("Images/Buildings/House.png")
 uc_house_img = pygame.image.load("Images/Buildings/UC_House.png")
-dock_img = pygame.image.load("Images/Buildings/Dock.PNG")
+dock_img = pygame.image.load("Images/Buildings/Dock.png")
 manor_img = pygame.image.load("Images/Buildings/Manor.png")
 uc_img = pygame.image.load("Images/Buildings/UC.png")
 ucw_img = pygame.image.load("Images/Buildings/UC_Dock.png")
@@ -93,15 +93,11 @@ class World(object):        #Class that stores basically EVERYTHING
         self.BuildingQueue = []
         self.buildqueue = 0
         
-<<<<<<< HEAD
     def new_world(self):
         del self.full_surface
         #seed(self.seed)
         img = self.mapGenerator.negative(self.mapGenerator.reallyCoolFull(self.ssize, num_p=23))
         #img = self.mapGenerator.whole_new(25, self.ssize, 1, -1)
-=======
-    def new_world(self, img, img2=None):
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
         self.map_width, self.map_height = img.get_size()
         
         self.minimap_img = pygame.Surface((self.map_width, self.map_height))
@@ -144,7 +140,6 @@ class World(object):        #Class that stores basically EVERYTHING
             w_last = False
             for a in xrange(self.map_height):
                 
-<<<<<<< HEAD
                 f_color = img.get_at((i,a))
                 color = f_color[0]
                 
@@ -156,16 +151,6 @@ class World(object):        #Class that stores basically EVERYTHING
 #                     colorb = 0
 #                     tile = DeepWaterTile(self, self.deepwater_img)
 
-=======
-                color = img.get_at((i,a))[0]
-                
-                if img2 == None: color2 = (255,0,220)
-                else: color2 = img2.get_at((i,a))
-                
-                if color < 95:
-                    colorb = 0
-                    tile = DeepWaterTile(self, self.deepwater_img)
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                     
                 if color < 110:
                     colorb = 0
@@ -250,7 +235,6 @@ class World(object):        #Class that stores basically EVERYTHING
                     self.current_height-=3
                     dark_surface = pygame.Surface((1,1))
                     dark_surface.set_alpha(128)
-<<<<<<< HEAD
                 #-----------
                     
                 #Used for determening start position
@@ -259,25 +243,14 @@ class World(object):        #Class that stores basically EVERYTHING
                 #-----
 				
                 tile.location = Vector2(i<<5, a<<5)
-=======
-                    
-                if color2[1] == 255:
-                    WORLD_START_POS = (i,a)
-        
-        
-                tile.location = Vector2(i*32, a*32)
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                 tile.rect.topleft = tile.location
                 tile.color = color
                 
-<<<<<<< HEAD
                 if to_rotate:
                     tile.img = pygame.transform.rotate(tile.img, randint(0,4)*90)
                 
                 self.background.blit(tile.img, tile.location)
 
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                 dark_surface2 = pygame.Surface((32, 32))
 
                 alph = 235-color
@@ -356,7 +329,6 @@ class World(object):        #Class that stores basically EVERYTHING
             Build = buildable[1]
             Build.location = self.get_tile_pos(pos-self.background_pos)*32
             print "LOC: ", Build.location
-<<<<<<< HEAD
             self.add_entity(Build)
             self.buildings[building]=Build
             self.BuildingQueue.append(Build)
@@ -372,30 +344,10 @@ class World(object):        #Class that stores basically EVERYTHING
             Build = buildable[1]
             Build.location = pos
             print "LOC2: ", Build.location
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
-            self.add_entity(Build)
-            self.buildings[building]=Build
-            self.BuildingQueue.append(Build)
-            return 1
-        
-<<<<<<< HEAD
-=======
-    def add_built(self, building, pos):
-        
-        
-        buildable = self.test_buildable(building, 1, pos)
-        print pos
-        
-        if buildable:
-            Build = buildable[1]
-            Build.location = pos.copy()
-            print "LOC2: ", Build.location
             self.add_entity(Build)
             self.buildings[building]=Build
             return 1
         
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
     def test_buildable(self, building, built, pos):
            
         if building == "LumberYard":
@@ -431,19 +383,12 @@ class World(object):        #Class that stores basically EVERYTHING
         for i in range(Twidth>>5):
             for j in range(Theight>>5):
                 try:
-<<<<<<< HEAD
                     if built:
                         test_tile = self.get_tile(Vector2((pos.x-32)+(i<<5), (pos.y-32)+(j<<5)))
                         #print "A", test_tile, test_tile.location
                     else:
                         test_tile = self.get_tile(Vector2(((pos.x-32)-self.background_pos.x)+(i<<5), ((pos.y-32)-self.background_pos.y)+(j>>5)))
                         #print "B", test_tile, test_tile.location
-=======
-                    if Built:
-                        test_tile = self.get_tile(Vector2((pos.x-32)+i*32, (pos.y-32)+j*32))
-                    else:
-                        test_tile = self.get_tile(Vector2(((pos.x-32)-self.background_pos.x)+i*32, ((pos.y-32)-self.background_pos.y)+j*32))
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                     
                     if test_tile.buildable!=1 and building!="Dock":
                         buildable = 0
@@ -495,7 +440,6 @@ class World(object):        #Class that stores basically EVERYTHING
         self.uc_house_img = uc_house_img.convert()
         self.uc_house_img.set_colorkey((255,0,255))
         
-<<<<<<< HEAD
         self.lumberjack_img = lumberjack_img.convert()
         self.farmer_img = farmer_img.convert()
         self.builder_img = builder_img.convert()
@@ -529,36 +473,6 @@ class World(object):        #Class that stores basically EVERYTHING
                     del self.Baby_TreeLocations[str(a[i])]
                 except IndexError:
                     pass
-=======
-
-    def grow_trees(self,trees):
-        for i in trees:
-            ran = randint(0,200)
-            if ran == 20:
-                old_tile = self.get_tile(trees[i])
-                darkness = pygame.Surface((32,32))
-                darkness.set_alpha(old_tile.darkness)
-                
-                new_tile = TreePlantedTile_w(self, WithTree_img)
-                
-                new_tile.darkness = old_tile.darkness
-                
-                new_tile.location = old_tile.location
-                new_tile.rect.topleft = new_tile.location
-                new_tile.color = old_tile.color
-                
-                new_tile.id = self.TreeID
-                self.TreeID += 1
-                
-                self.TileArray[int(new_tile.location.y/32)][int(new_tile.location.x/32)] = new_tile
-                self.background.blit(new_tile.img, new_tile.location)
-                self.background.blit(darkness, new_tile.location)
-                try:
-                    del self.Baby_TreeLocations[str(old_tile.id)]
-                    return 0
-                except KeyError:
-                    return None    
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
  
     def add_entity(self, entity):       #Used to add entities to the world
         
