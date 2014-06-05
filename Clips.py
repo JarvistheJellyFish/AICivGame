@@ -27,13 +27,9 @@ class Clips:
     def __init__(self, world, Osizes):
         self.size = Osizes
         self.world = world
-<<<<<<< HEAD
         #ratio = self.size[0]/float(self.size[1])
         #ratio = (self.size[0]/4, self.size[1]/4)
         self.minimap_size = int(self.size[0]/4) , int(self.size[1]/4)
-=======
-        self.minimap_size = 300,300
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
         self.minimap = pygame.transform.scale(self.world.minimap_img, self.minimap_size)
         
         self.a = self.world.w/float(self.minimap_size[0])
