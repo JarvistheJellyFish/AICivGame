@@ -83,11 +83,7 @@ class Searching(State):
             self.tile_array = self.Lumberjack.world.get_tile_array((self.Lumberjack.location),self.Lumberjack.can_see)
             test = self.Lumberjack.world.get_tile(self.Lumberjack.location)
             
-<<<<<<< HEAD
             #pygame.draw.rect(self.Lumberjack.world.background, (255,255,255), (test.location[0]-(self.Lumberjack.can_see[0]<<5),test.location[1]-(self.Lumberjack.can_see[1]<<5),(self.Lumberjack.can_see[0]<<6)+32,(self.Lumberjack.can_see[1]<<6)+32), 3)
-=======
-            #pygame.draw.rect(self.Lumberjack.world.background, (255,255,255), (test.location[0]-(self.Lumberjack.can_see[0]*32),test.location[1]-(self.Lumberjack.can_see[1]*32),(self.Lumberjack.can_see[0]*64)+32,(self.Lumberjack.can_see[1]*64)+32), 3)
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
             
             count = 0
             for i in self.tile_array:
@@ -140,11 +136,7 @@ class Searching(State):
         w,h = self.Lumberjack.worldSize
         offset = self.Lumberjack.TileSize/2
         TileSize = self.Lumberjack.TileSize
-<<<<<<< HEAD
         random_dest = (randint(0,25)*TileSize+offset, randint(0,25)*TileSize+offset)
-=======
-        random_dest = (randint(0,12)*TileSize+offset, randint(0,12)*TileSize+offset)
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
         self.Lumberjack.destination = Vector2(*random_dest)
     
 class Chopping(State):
@@ -167,10 +159,7 @@ class Chopping(State):
             if check.name != "TreePlantedTile_W":
                 self.Lumberjack.hit = 0
                 self.Lumberjack.num = 0
-<<<<<<< HEAD
                 self.Lumberjack.image = self.Lumberjack.start
-=======
->>>>>>> e9022a423b3b8171706f7d6850695d1f132cd403
                 self.Lumberjack.ani_speed = self.Lumberjack.ani_speed_init
                 return "Searching"
 
