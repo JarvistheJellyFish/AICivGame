@@ -105,5 +105,5 @@ class UnderConstruction(Building):
         self.max_ttb = 30.0
         
     def create(self):
-        if self.ttb <= 0:
-            world.add_building(self.will_be, self.location)
+        self.world.add_built(self.will_be, self.location)
+        self.world.remove_entity(self)

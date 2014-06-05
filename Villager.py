@@ -41,7 +41,7 @@ class Villager_sleeping(State):
 
     def entry_actions(self):
         self.Villager.speed = 100.
-        self.Villager.destination = self.Villager.LastLumberYard.location
+        self.Villager.destination = self.Villager.LastLumberYard.location.copy()
             
 
 

@@ -2,24 +2,33 @@ from StateMachine import *
 from World import *
 from GameEntity import *
 from vector2 import *
+
 from Building import *
 
 from random import *
 
 import pygame
 
-LumberImg = pygame.image.load()
-
 
 class Builder(GameEntity):
     
-    def __init__(self, world, image):
+    def __init__(self, world, image, rest):
         GameEntity.__init__(self,world,"Builder",image)
         
         self.current_build = None
         
-        building_state
-        walking_state
+        self.speed = 100.0
+        
+        self.building_state = Builder_Building(self)
+        self.Idle_state = Builder_Idle(self)
+        self.Finding_state = Builder_Finding(self)
+        
+        self.brain.add_state(self.building_state)
+        self.brain.add_state(self.Idle_state)
+        self.brain.add_state(self.Finding_state)
+        
+        
+        self.IdleLocation = rest.location.copy()
         
         
 class Builder_Building(State):
@@ -29,17 +38,21 @@ class Builder_Building(State):
         self.Builder = Builder
         
     def check_conditions(self):
-        if self.building_complete==30:
+        if self.building_complete>=5.0:
             
-            self.Builder.world.add_entity()
+            self.Builder.target.create()
+            
+            self.Builder.world.BuildingQueue.remove(self.Builder.target)
+            return "Finding"
     
     def do_actions(self):
-        self.building_complete+=self.tp
+        self.building_complete+=self.Builder.tp
     
     def entry_actions(self):
-        if self.Builder.world.wood >= 50:
-            self.building_complete = 0
-            
+        
+        self.Builder.destination = self.Builder.location.copy()
+        self.building_complete = 0.0
+        
 class Builder_Finding(State):   #Finding a suitable place to build.
     """If:
     Lumber Yard - In the woods not near anything else
@@ -53,41 +66,34 @@ class Builder_Finding(State):   #Finding a suitable place to build.
         self.Builder = Builder
         
     def check_conditions(self):
+        if len(self.Builder.world.BuildingQueue) == 0:
+            return "Idle" 
+        
         if self.Builder.location.get_distance_to(self.Builder.destination) < 2:
-            if self.Builder.world.get_close_entity(self.Builder.current_build, self.Builder.destination, 30) != None:
-                random_dest()
-            else:
-                return "Building"
-            
-                
-
+            return "Building"
+          
     def do_actions(self):
         pass
     
     def entry_actions(self):
-        self.random_dest()
+        try:
+            self.Builder.destination = self.Builder.world.BuildingQueue[0].location.copy()
+            self.Builder.target = self.Builder.world.BuildingQueue[0]
+              
+        except IndexError:
+            pass
+            
+class Builder_Idle(State):
     
-    def random_dest(self):
-        w,h = self.Farmer.worldSize
-        if self.Builder.current_build == "Lumber Yard":
-            self.Builder.destination = Vector2(randint(0, w/3), randint(0, h))
-            self.BuildingBuilt = LumberYard()
-        elif self.Builder.current_build == "Dock":
-            done = False 
-            while done == False:
-                choice = random.randint(0, len(self.Builder.world.pond_points)-1)
-                if self.Builder.world.get_close_entity("Dock",
-                                                       self.Builder.world.pond_points[choice],
-                                                       10)==None:
-                    done = True
-            self.Builder.destination = self.Builder.world.pond_points[choice]
-        elif self.Builder.current_build == "House":
-            self.Builder.destination = Vector2(randint(w*.333, w*.666), randint(0, h))
-            
+    def __init__(self, Builder):
+        State.__init__(self, "Idle")
+        self.Builder = Builder
     
-
-            
-
-            
-
+    def entry_actions(self):
+        
+        self.Builder.destination = self.Builder.IdleLocation
+        
+    def check_conditions(self):
+        if len(self.Builder.world.BuildingQueue) >= 1:
+            return "Finding"
     
