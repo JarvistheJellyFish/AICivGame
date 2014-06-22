@@ -454,18 +454,18 @@ class World(object):        #Class that stores basically EVERYTHING
                     old_tile = self.get_tile(trees[a[i]])
                     darkness = pygame.Surface((32,32))
                     darkness.set_alpha(old_tile.darkness)
-                    
+
                     new_tile = TreePlantedTile_w(self, WithTree_img)
-                    
+
                     new_tile.darkness = old_tile.darkness
-                    
+
                     new_tile.location = old_tile.location
                     new_tile.rect.topleft = new_tile.location
                     new_tile.color = old_tile.color
-                    
+
                     new_tile.id = self.TreeID
                     self.TreeID += 1
-                    
+
                     self.TileArray[int(new_tile.location.y/32)][int(new_tile.location.x/32)] = new_tile
                     self.background.blit(new_tile.img, new_tile.location)
                     self.background.blit(darkness, new_tile.location)
@@ -473,16 +473,16 @@ class World(object):        #Class that stores basically EVERYTHING
                     del self.Baby_TreeLocations[str(a[i])]
                 except IndexError:
                     pass
- 
+
     def add_entity(self, entity):       #Used to add entities to the world
-        
+
         self.entities[self.entity_id] = entity
         entity.id = self.entity_id
         self.entity_id += 1
-        
+
     def remove_entity(self, entity):    #function for removing an entity
         del self.entities[entity.id]
-        
+
     def remove_tree(self, tree_id):
         #print len(self.TreeLocations)
         try:
@@ -490,28 +490,28 @@ class World(object):        #Class that stores basically EVERYTHING
             return 0
         except KeyError:
             return None
-                
+
     def get(self, entity_id):           #Return an entity
-        
+
         if entity_id in self.entities:
             return self.entities[entity_id]
         else:
             return None
-        
+
     def process(self, time_passed):     #Run the world through 1 cycle
-                       
+         
         for entity in self.entities.values():
             entity.process(time_passed)
-            
+
         self.wood_text = self.font.render("Wood: %d/%d"%(self.wood, self.MAXwood), True, (255,255,255))
         self.food_text = self.font.render("Food: %d/%d"%(self.food, self.MAXfood), True, (255,255,255))
         self.pop_text = self.font.render("Population: %d/%d"%(self.population, self.MAXpopulation), True, (255,255,255))
         self.frame_text = self.font.render("FPS: %.2f"%(self.clock.get_fps()), True, (255,255,255))
-        
+
         semi_angle = abs(self.clock_degree-180.0)
         self.background_alpha = min((255-(255*(abs(semi_angle/180)))), 220.0)
         self.background_over.set_alpha(self.background_alpha)
-            
+
     def render(self, surface):
         surface.blit(self.background, self.background_pos)
 
@@ -521,12 +521,12 @@ class World(object):        #Class that stores basically EVERYTHING
 
         for entity in self.entities.itervalues():
             entity.render(surface)
-            
+
         surface.blit(self.background_over, (0,0))
-            
+
         #for point in self.pond_points:
         #    pygame.draw.circle(surface, (255,0,0), (int(point[0]), int(point[1])), 5)
-            
+
 #         surface.set_clip(0,0,self.w,self.font_size+4)
 #         surface.blit(self.wood_text, (40,2))
 #         surface.blit(self.food_text, (200,2))
@@ -535,43 +535,44 @@ class World(object):        #Class that stores basically EVERYTHING
 
     def render_all(self, surface, tp, mouse_pos):
         self.cliper.render(surface, tp, mouse_pos)
-        
-            
+
+
     def get_close_entity(self, name, location, range=100.):
 
-        location = Vector2(*location)        
-        
-        for entity in self.entities.itervalues():            
-            if entity.name == name:                
+        location = Vector2(*location)
+
+        for entity in self.entities.itervalues():
+            if entity.name == name:
                 distance = location.get_distance_to(entity.location)
                 if range == -1:
                     return entity
                 if distance < range:
                     return entity
-                
-        return None    
-    
+
+        return None
+
     def get_tile(self, location):
         tile = self.get_tile_pos(location)
 
         return self.TileArray[int(tile.y)][int(tile.x)]
-    
+
     def get_tile_pos(self, location):
-        return Vector2(int(location.x)>>5, int(location.y)>>5)
-    
+        return Vector2(int(location.x) >> 5, int(location.y) >> 5)
+
     def get_tile_array(self, start_pos, dimensions):
         dimensions = (int(dimensions[0]), int(dimensions[1]))
-        
+
         start_tile = self.get_tile_pos(start_pos)
 
-        array = [[None for i in xrange((dimensions[0]*2)+1)] for a in xrange((dimensions[1]*2)+1)]
-        
-        for i in xrange((dimensions[0]*2)+1):
-            for a in xrange((dimensions[1]*2)+1):
-                if start_tile.x+i < 0 or start_tile.y+a < 0:
+        array = [[None for i in xrange(
+           (dimensions[0] * 2) + 1)] for a in xrange((dimensions[1] * 2) + 1)]
+
+        for i in xrange((dimensions[0] * 2) + 1):
+            for a in xrange((dimensions[1] * 2) + 1):
+                if start_tile.x + i < 0 or start_tile.y + a < 0:
                     continue
-                
                 else:
-                    array[a][i] = self.TileArray[int((start_tile.y+a)-1)][int((start_tile.x+i)-1)]
+                    array[a][i] = self.TileArray[int(
+                       (start_tile.y + a) - 1)][int((start_tile.x + i) - 1)]
 
         return array
