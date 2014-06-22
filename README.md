@@ -8,9 +8,12 @@ Start
 -----
 
 Install pygame
-Start with ???
+
+Start with ´´´python NewVillagerSim.py´´´
 
 Licence
 -------
+
 ???
+
 pygame have GNU LESSER GENERAL PUBLIC LICENSE

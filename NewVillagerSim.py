@@ -100,7 +100,7 @@ def run():
     Lumberjack_image = pygame.image.load("Images/Entities/Lumberjack.png").convert()
     Builder_image = pygame.image.load("Images/Entities/Builder.png").convert()
 
-    placing_lumberyard_img = pygame.image.load("Images/Buildings/Dark_LumberYard.png").convert()
+    placing_lumberyard_img = pygame.image.load("Images/Buildings/Dark_Lumberyard.png").convert()
     placing_lumberyard_img.set_colorkey((255,0,255))
     placing_house_img = pygame.image.load("Images/Buildings/Dark_House.png").convert()
     placing_house_img.set_colorkey((255,0,255))
@@ -109,7 +109,7 @@ def run():
     placing_manor_img = pygame.image.load("Images/Buildings/Dark_Manor.png").convert()
     placing_manor_img.set_colorkey((255,0,255))
     
-    bad_lumberyard_img = pygame.image.load("Images/Buildings/Red_LumberYard.png").convert()
+    bad_lumberyard_img = pygame.image.load("Images/Buildings/Red_Lumberyard.png").convert()
     bad_lumberyard_img.set_colorkey((255,0,255))
     
     #pygame.image.save(me_double_size(pygame.image.load("Images/Buildings/LumberYard_Icon.png").convert()), "LARGERLumb.png")
@@ -120,7 +120,7 @@ def run():
     #pygame.image.save(world.minimap_img, "Images/SmallAndVariety2.png")
     
     selected_building = "LumberYard"
-    selected_img = pygame.image.load("Images/Buildings/Dark_LumberYard.png").convert()
+    selected_img = pygame.image.load("Images/Buildings/Dark_Lumberyard.png").convert()
     selected_img.set_colorkey((255,0,255))
     
     world.clock.tick()
