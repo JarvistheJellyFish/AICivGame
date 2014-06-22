@@ -20,7 +20,7 @@ from random import randint, seed
 from VoronoiMapGen import point, mapGen
 
 grass_img = pygame.image.load("Images/Tiles/MinecraftDarkGrass.png")
-tree_img = pygame.image.load("Images/Tiles/MinecraftGrass.PNG")
+tree_img = pygame.image.load("Images/Tiles/MinecraftGrass.png")
 water_img = pygame.image.load("Images/Tiles/AndrewWater2.png")
 sand_img = pygame.image.load("Images/Tiles/Sand.PNG")
 cobble_img = pygame.image.load("Images/Tiles/AndrewCobble2.png")

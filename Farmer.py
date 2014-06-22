@@ -10,7 +10,7 @@ from random import *
 
 import pygame
 
-Tile_image = pygame.image.load("Images/Tiles/Baby_Tree.png")
+Tile_image = pygame.image.load("Images/Tiles/baby_tree.png")
 
 class Farmer(GameEntity):
     
