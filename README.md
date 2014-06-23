@@ -9,7 +9,12 @@ Start
 
 Install pygame
 
-Start with ´´´python NewVillagerSim.py´´´
+Start with ```python NewVillagerSim.py```
+
+Screenshot
+---------
+
+Press F2 for screenshot, it is save in ```Images/Screenshots```
 
 Licence
 -------
