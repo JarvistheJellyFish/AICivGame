@@ -1,9 +1,5 @@
-from World import *
-from StateMachine import *
-from vector2 import *
-
-import pygame
-from pygame.locals import *
+import vector2
+import StateMachine
 
 
 class GameEntity(object):
@@ -18,12 +14,12 @@ class GameEntity(object):
             self.image.set_colorkey((255, 0, 255))
         except AttributeError:
             pass
-        self.location = Vector2(0, 0)
-        self.world_location = Vector2(0, 0)
-        self.destination = Vector2(0, 0)
+        self.location = vector2.Vector2(0, 0)
+        self.world_location = vector2.Vector2(0, 0)
+        self.destination = vector2.Vector2(0, 0)
         self.speed = 0.
 
-        self.brain = StateMachine()
+        self.brain = StateMachine.StateMachine()
 
         self.id = 0
 

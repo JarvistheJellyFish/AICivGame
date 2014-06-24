@@ -8,7 +8,6 @@ from random import randint
 
 import World
 import vector2
-import Builder
 from Clips import Clips
 from crossfade import CrossFade
 from VoronoiMapGen import point, mapGen
@@ -51,7 +50,8 @@ def run():
 
     if FULL_ON:
         screen = pygame.display.set_mode(
-            SCREEN_SIZE, Builder.FULLSCREEN | Builder.HWSURFACE, 32)
+            SCREEN_SIZE,
+            pygame.locals.FULLSCREEN | pygame.locals.HWSURFACE, 32)
     else:
         screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)
 

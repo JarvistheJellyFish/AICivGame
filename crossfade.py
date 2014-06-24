@@ -1,5 +1,4 @@
 import pygame
-pygame.init()
 
 
 class CrossFade(pygame.sprite.Sprite):
