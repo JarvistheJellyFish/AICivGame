@@ -59,15 +59,15 @@ class Lumberjack(GameEntity):
             else:
                 self.num += 1
 
-        
+
 class Searching(State):
     """This state will be used to have the Lumberjack looking for
        trees to cut, It needs to be fast enough to have AT LEAST 20 Lumberjacks
        with little to no framerate loss.
-       
-       Perhaps it could be used to find a clump of trees. and then the Lumberjack
-       wouldn't just wander around aimlessly searching for trees even though it
-       saw some when it was just at another tree
+
+       Perhaps it could be used to find a clump of trees. and then the
+       Lumberjack wouldn't just wander around aimlessly searching for trees
+       even though it saw some when it was just at another tree
     """
 
     def __init__(self, Lumberjack):
@@ -81,11 +81,13 @@ class Searching(State):
         pass
 
     def check_conditions(self):
-        if self.Lumberjack.location.get_distance_to(self.Lumberjack.destination) < 2:
-            self.tile_array = self.Lumberjack.world.get_tile_array((self.Lumberjack.location), self.Lumberjack.can_see)
+        if self.Lumberjack.location.get_distance_to(
+                self.Lumberjack.destination) < 2:
+            self.tile_array = self.Lumberjack.world.get_tile_array(
+                (self.Lumberjack.location), self.Lumberjack.can_see)
             test = self.Lumberjack.world.get_tile(self.Lumberjack.location)
 
-            #pygame.draw.rect(self.Lumberjack.world.background, (255,255,255), 
+            #pygame.draw.rect(self.Lumberjack.world.background, (255,255,255),
             #(test.location[0]-(self.Lumberjack.can_see[0]<<5),
             #test.location[1]-(self.Lumberjack.can_see[1]<<5),
             #(self.Lumberjack.can_see[0]<<6)+32,
@@ -101,35 +103,52 @@ class Searching(State):
                             self.Lumberjack.Tree_tile = Tile
                             self.Lumberjack.tree_id = Tile.id
                             if count == 1:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0] - 32,self.Lumberjack.location[1] - 32)
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0] - 32,
+                                    self.Lumberjack.location[1] - 32)
 
                             elif count == 2:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0],self.Lumberjack.location[1] - 32)
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0],
+                                    self.Lumberjack.location[1] - 32)
 
                             elif count == 3:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0] + 32,self.Lumberjack.location[1] - 32)
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0] + 32,
+                                    self.Lumberjack.location[1] - 32)
 
                             elif count == 4:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0] - 32,self.Lumberjack.location[1])
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0] - 32,
+                                    self.Lumberjack.location[1])
 
                             elif count == 5:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0],self.Lumberjack.location[1])
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0],
+                                    self.Lumberjack.location[1])
 
                             elif count == 6:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0] + 32,self.Lumberjack.location[1])
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0] + 32,
+                                    self.Lumberjack.location[1])
 
                             elif count == 7:
-                                self.Lumberjack.destination = (self.Lumberjack.location[0] - 32,self.Lumberjack.location[1] + 32)
+                                self.Lumberjack.destination = (
+                                    self.Lumberjack.location[0] - 32,
+                                    self.Lumberjack.location[1] + 32)
 
                             elif count == 8:
                                 self.Lumberjack.destination = (
-                                    self.Lumberjack.location[0],self.Lumberjack.location[1] + 32)
+                                    self.Lumberjack.location[0],
+                                    self.Lumberjack.location[1] + 32)
 
                             elif count == 9:
                                 self.Lumberjack.destination = (
-                                    self.Lumberjack.location[0] + 32,self.Lumberjack.location[1] + 32)
+                                    self.Lumberjack.location[0] + 32,
+                                    self.Lumberjack.location[1] + 32)
 
-                            self.Lumberjack.main_des = self.Lumberjack.destination
+                            main_des = self.Lumberjack.destination
+                            self.Lumberjack.main_des = main_des
                             return "Chopping"
 
             self.random_dest()

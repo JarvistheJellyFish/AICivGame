@@ -1,21 +1,15 @@
+from math import cos, sin, pi
+from random import randint, seed
 
 import pygame
-from pygame.locals import *
+import vector2
 
-from math import cos, sin, pi
-
-from vector2 import *
-
-from Tile import *
-
-from Building import *
-from Builder import *
-from Villager import *
-from Lumberjack import *
-from Farmer import *
-
+import Tile
+import Building
+import Builder
+import Farmer
+import Lumberjack
 from Clips import Clips
-from random import randint, seed
 from VoronoiMapGen import point, mapGen
 
 grass_img = pygame.image.load("Images/Tiles/MinecraftDarkGrass.png")
@@ -57,7 +51,7 @@ class World(object):
         self.ss = ss
         self.w, self.h = self.size
         #Certain functions entities need this.
-        self.center = Vector2(self.w / 2, self.h / 2)
+        self.center = vector2.Vector2(self.w / 2, self.h / 2)
 
         self.building = {}
         self.entities = {}
@@ -71,20 +65,21 @@ class World(object):
         self.MAXfood = 0
         self.population = 0
         self.MAXpopulation = 15
-        self.background_pos = Vector2(ss[0] / 5.0, 0)
+        self.background_pos = vector2.Vector2(ss[0] / 5.0, 0)
         self.mapGenerator = mapGen()
 
-        self.background_over = pygame.Surface((1600, 900), HWSURFACE)
+        self.background_over = pygame.Surface((1600, 900),
+            pygame.locals.HWSURFACE)
         self.background_over.set_alpha(128)
         self.background_over.fill((0, 0, 20, 128))
 
-        self.full_surface = pygame.Surface(self.size, HWSURFACE)
+        self.full_surface = pygame.Surface(self.size, pygame.locals.HWSURFACE)
 
         self.clock = pygame.time.Clock()
 
         print self.size
         self.background = pygame.Surface(
-            (self.size[0], self.size[1]), HWSURFACE)
+            (self.size[0], self.size[1]), pygame.locals.HWSURFACE)
         self.background.fill((255, 255, 255))
 
         self.font = font
@@ -139,10 +134,10 @@ class World(object):
         self.MAXfood = 0
         self.population = 0
         self.MAXpopulation = 15
-        self.background_pos = Vector2(self.ss[0] / 5.0, 0)
+        self.background_pos = vector2.Vector2(self.ss[0] / 5.0, 0)
         self.mapGenerator = mapGen()
 
-        self.full_surface = pygame.Surface(self.size, HWSURFACE)
+        self.full_surface = pygame.Surface(self.size, pygame.locals.HWSURFACE)
 
         self.clock_degree = 0
         #Used for the clock
@@ -168,27 +163,27 @@ class World(object):
 
                 if color < 110:
                     colorb = 0
-                    tile = WaterTile(self, self.water_img)
+                    tile = Tile.WaterTile(self, self.water_img)
 
                     last_image = self.sand_img
                     last_color = 0
 
                 elif color >= 110 and color < 120:
                     colorb = 110
-                    tile = BeachTile(self, self.sand_img)
+                    tile = Tile.BeachTile(self, self.sand_img)
                     last_image = self.sand_img
                     #to_rotate = 0
                     last_color = 110
 
                 elif color >= 120 and color < 140:
                     colorb = 120
-                    tile = GrassTile(self, self.grass_img)
+                    tile = Tile.GrassTile(self, self.grass_img)
                     last_image = self.sand_img
                     last_color = 120
 
                 elif color >= 140 and color < 160:
                     colorb = 140
-                    tile = TreePlantedTile(self, self.tree_img)
+                    tile = Tile.TreePlantedTile(self, self.tree_img)
                     last_image = self.grass_img
                     last_color = 140
 
@@ -196,8 +191,8 @@ class World(object):
                     colorb = 160
                     if color2[2] == 220:
 
-                        tile = TreePlantedTile_w(self, self.WithTree_img)
-                        tile.location = Vector2(i << 5, a << 5)
+                        tile = Tile.TreePlantedTile_w(self, self.WithTree_img)
+                        tile.location = vector2.Vector2(i << 5, a << 5)
                         tile.rect.topleft = tile.location
                         tile.id = self.TreeID
 
@@ -206,27 +201,27 @@ class World(object):
 
                         to_rotate = 0
                     else:
-                        tile = TreePlantedTile(self, self.tree_img)
+                        tile = Tile.TreePlantedTile(self, self.tree_img)
 
                     last_image = self.tree_img
                     last_color = 160
 
                 elif color >= 170 and color < 190:
                     colorb = 170
-                    tile = TreePlantedTile(self, self.tree_img)
+                    tile = Tile.TreePlantedTile(self, self.tree_img)
                     last_image = self.WithTree_img
                     last_color = 170
 
                 elif color >= 190 and color < 236:
                     colorb = 190
-                    tile = SmoothStoneTile(self, self.SStone_img)
+                    tile = Tile.SmoothStoneTile(self, self.SStone_img)
                     last_image = self.tree_img
                     to_rotate = 0
                     last_color = 190
 
                 else:
                     colorb = 236
-                    tile = SnowTile(self, self.snow_img)
+                    tile = Tile.SnowTile(self, self.snow_img)
                     last_image = self.SStone_img
                     last_color = 236
 
@@ -255,7 +250,7 @@ class World(object):
                     WORLD_START_POS = (i, a)
                 #-----
 
-                tile.location = Vector2(i << 5, a << 5)
+                tile.location = vector2.Vector2(i << 5, a << 5)
                 tile.rect.topleft = tile.location
                 tile.color = color
 
@@ -309,15 +304,15 @@ class World(object):
         VILLAGER_COUNT = 5
         BUILDER_COUNT = 1
 
-        lumber1 = LumberYard(self, self.lumberyard_img)
-        lumber1.location = Vector2(self.w / 2, self.h / 2)
+        lumber1 = Building.LumberYard(self, self.lumberyard_img)
+        lumber1.location = vector2.Vector2(self.w / 2, self.h / 2)
         lumber1.tile_x, lumber1.tile_y = 4, 4
         self.add_entity(lumber1)
 
         for Villager_no in xrange(VILLAGER_COUNT):
             """Adds all Wood Cutters
             """
-            villager = Lumberjack(self, self.lumberjack_img)
+            villager = Lumberjack.Lumberjack(self, self.lumberjack_img)
             villager.location = lumber1.location.copy()
             villager.LastLumberYard = lumber1
             villager.brain.set_state("Searching")
@@ -325,7 +320,7 @@ class World(object):
             self.population += 1
 
         for Building_no in xrange(BUILDER_COUNT):
-            builder = Builder(self, self.builder_img, lumber1)
+            builder = Builder.Builder(self, self.builder_img, lumber1)
             builder.location = lumber1.location.copy()
             builder.brain.set_state("Idle")
             self.add_entity(builder)
@@ -334,8 +329,8 @@ class World(object):
         for FARMER in xrange(FARMER_COUNT):
             """Adds all the farmers
             """
-            farmer = Farmer(self, self.farmer_img)
-            farmer.location = Vector2(20, 20)
+            farmer = Farmer.Farmer(self, self.farmer_img)
+            farmer.location = vector2.Vector2(20, 20)
             farmer.brain.set_state("Planting")
             self.add_entity(farmer)
             self.population += 1
@@ -371,27 +366,29 @@ class World(object):
 
         if building == "LumberYard":
             if built:
-                Build = LumberYard(self, self.lumberyard_img)
+                Build = Building.LumberYard(self, self.lumberyard_img)
             else:
-                Build = UnderConstruction(self, self.uc_img, "LumberYard")
+                Build = Building.UnderConstruction(self, self.uc_img,
+                    "LumberYard")
 
         elif building == "House":
             if built:
-                Build = House(self, self.house_img)
+                Build = Building.House(self, self.house_img)
             else:
-                Build = UnderConstruction(self, self.uc_house_img, "House")
+                Build = Building.UnderConstruction(self,
+                    self.uc_house_img, "House")
 
         elif building == "Dock":
             if built:
-                Build = Dock(self, self.dock_img)
+                Build = Building.Dock(self, self.dock_img)
             else:
-                Build = UnderConstruction(self, self.ucw_img, "Dock")
+                Build = Building.UnderConstruction(self, self.ucw_img, "Dock")
 
         elif building == "Manor":
             if built:
-                Build = Manor(self, self.manor_img)
+                Build = Building.Manor(self, self.manor_img)
             else:
-                Build = UnderConstruction(self, self.uc_img, "Manor")
+                Build = Building.UnderConstruction(self, self.uc_img, "Manor")
 
         buildable = 1
         land = 0
@@ -402,11 +399,11 @@ class World(object):
             for j in range(Theight >> 5):
                 try:
                     if built:
-                        test_tile = self.get_tile(Vector2(
+                        test_tile = self.get_tile(vector2.Vector2(
                             (pos.x - 32) + (i << 5), (pos.y - 32) + (j << 5)))
                         #print "A", test_tile, test_tile.location
                     else:
-                        test_tile = self.get_tile(Vector2(
+                        test_tile = self.get_tile(vector2.Vector2(
                            ((pos.x - 32) - self.background_pos.x) + (i << 5), (
                            (pos.y - 32) - self.background_pos.y) + (j >> 5)))
                         #print "B", test_tile, test_tile.location
@@ -573,7 +570,7 @@ class World(object):
 
     def get_close_entity(self, name, location, range=100.):
 
-        location = Vector2(*location)
+        location = vector2.Vector2(*location)
 
         for entity in self.entities.itervalues():
             if entity.name == name:
@@ -591,7 +588,7 @@ class World(object):
         return self.TileArray[int(tile.y)][int(tile.x)]
 
     def get_tile_pos(self, location):
-        return Vector2(int(location.x) >> 5, int(location.y) >> 5)
+        return vector2.Vector2(int(location.x) >> 5, int(location.y) >> 5)
 
     def get_tile_array(self, start_pos, dimensions):
         dimensions = (int(dimensions[0]), int(dimensions[1]))
