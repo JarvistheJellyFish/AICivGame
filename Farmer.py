@@ -1,23 +1,20 @@
-from StateMachine import *
-from World import *
-from GameEntity import *
-from vector2 import *
-from Entities import *
-from Tile import *
-from Image_funcs import *
-
-from random import *
+from random import randint
 
 import pygame
+import vector2
 
+import GameEntity
+import StateMachine
+import Image_funcs
+import Tile
 Tile_image = pygame.image.load("Images/Tiles/baby_tree.png")
 
 
-class Farmer(GameEntity):
+class Farmer(GameEntity.GameEntity):
 
     def __init__(self, world, image):
-        GameEntity.__init__(self, world, "Farmer", image)
-        img_func = image_funcs(18, 17)
+        GameEntity.GameEntity.__init__(self, world, "Farmer", image)
+        img_func = Image_funcs.image_funcs(18, 17)
 
         planting_state = Farmer_Planting(self)
 #         exploring_state = Farmer_Exploring(self)
@@ -62,19 +59,19 @@ class Farmer(GameEntity):
                 self.num += 1
 
     def render(self, surface):
-        GameEntity.render(self, surface)
+        GameEntity.GameEntity.render(self, surface)
 
 
-class Farmer_Planting(State):
+class Farmer_Planting(StateMachine.State):
 
     def __init__(self, Farmer):
 
-        State.__init__(self, "Planting")
+        StateMachine.State.__init__(self, "Planting")
         self.Farmer = Farmer
 
     def check_conditions(self):
         if self.Farmer.location.get_distance_to(self.Farmer.destination) < 2:
-            self.Farmer.destination = Vector2(self.Farmer.location)
+            self.Farmer.destination = vector2.Vector2(self.Farmer.location)
             self.Farmer.update()
 
     def do_actions(self):
@@ -100,12 +97,12 @@ class Farmer_Planting(State):
             self.Farmer.image.set_colorkey((255, 0, 255))
 
             old_tile = self.Farmer.world.get_tile(
-                Vector2(self.Farmer.location))
+                vector2.Vector2(self.Farmer.location))
 
             darkness = pygame.Surface((32, 32))
             darkness.set_alpha(old_tile.darkness)
 
-            new_tile = Baby_Tree(self.Farmer.world, Tile_image)
+            new_tile = Tile.Baby_Tree(self.Farmer.world, Tile_image)
             new_tile.darkness = old_tile.darkness
             new_tile.location = self.Farmer.world.get_tile_pos(
                 self.Farmer.destination) * 32
@@ -140,7 +137,7 @@ class Farmer_Planting(State):
         TileSize = self.Farmer.TileSize
         random_dest = (randint(0, 25) * TileSize + offset, randint(0, 25)
             * TileSize + offset)
-        self.Farmer.destination = Vector2(* random_dest)
+        self.Farmer.destination = vector2.Vector2(* random_dest)
 
     def entry_actions(self):
         self.random_dest()

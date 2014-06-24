@@ -1,14 +1,7 @@
-from StateMachine import *
-from World import *
-from GameEntity import *
-from vector2 import *
-import glob
-from random import *
-
-import pygame
+import GameEntity
 
 
-class Building(GameEntity):
+class Building(GameEntity.GameEntity):
 
     def __init(self, world, name, img):
         GameEntity.__init__(self, world, name, img)

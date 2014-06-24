@@ -1,17 +1,11 @@
-from GameEntity import *
-from vector2 import *
-
-from Building import *
-
-from random import *
-
-import pygame
+import GameEntity
+import StateMachine
 
 
-class Builder(GameEntity):
+class Builder(GameEntity.GameEntity):
 
     def __init__(self, world, image, rest):
-        GameEntity.__init__(self, world, "Builder", image)
+        GameEntity.GameEntity.__init__(self, world, "Builder", image)
 
         self.current_build = None
         self.speed = 100.0
@@ -27,10 +21,10 @@ class Builder(GameEntity):
         self.IdleLocation = rest.location.copy()
 
 
-class Builder_Building(State):
+class Builder_Building(StateMachine.State):
 
     def __init__(self, Builder):
-        State.__init__(self, "Building")
+        StateMachine.State.__init__(self, "Building")
         self.Builder = Builder
 
     def check_conditions(self):
@@ -49,7 +43,7 @@ class Builder_Building(State):
         self.building_complete = 0.0
 
 
-class Builder_Finding(State):
+class Builder_Finding(StateMachine.State):
     """Finding a suitable place to build.
     If:
     Lumber Yard - In the woods not near anything else
@@ -59,7 +53,7 @@ class Builder_Finding(State):
     """
 
     def __init__(self, Builder):
-        State.__init__(self, "Finding")
+        StateMachine.State.__init__(self, "Finding")
         self.Builder = Builder
 
     def check_conditions(self):
@@ -82,10 +76,10 @@ class Builder_Finding(State):
             pass
 
 
-class Builder_Idle(State):
+class Builder_Idle(StateMachine.State):
 
     def __init__(self, Builder):
-        State.__init__(self, "Idle")
+        StateMachine.State.__init__(self, "Idle")
         self.Builder = Builder
 
     def entry_actions(self):

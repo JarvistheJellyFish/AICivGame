@@ -1,11 +1,11 @@
-from GameEntity import GameEntity
-from StateMachine import State
-from Tile import *
-from Image_funcs import *
-
 from random import randint
 
 import pygame
+import vector2
+
+from GameEntity import GameEntity
+from StateMachine import State
+from Image_funcs import image_funcs
 
 NoTreeImg = pygame.image.load("Images/Tiles/MinecraftGrass.png")
 
@@ -165,7 +165,7 @@ class Searching(State):
         TileSize = self.Lumberjack.TileSize
         random_dest = (randint(0, 25) * TileSize + offset,
             randint(0, 25) * TileSize + offset)
-        self.Lumberjack.destination = Vector2(* random_dest)
+        self.Lumberjack.destination = vector2.Vector2(* random_dest)
 
 
 class Chopping(State):
@@ -182,10 +182,10 @@ class Chopping(State):
 
     def check_conditions(self):
         check = self.Lumberjack.world.get_tile(
-            Vector2(self.Lumberjack.location))
+            vector2.Vector2(self.Lumberjack.location))
         if self.Lumberjack.location.get_distance_to(
                 self.Lumberjack.main_des) < 2:
-            self.Lumberjack.destination = Vector2(self.Lumberjack.location)
+            self.Lumberjack.destination = vector2.Vector2(self.Lumberjack.location)
 
             if check.name != "TreePlantedTile_W":
                 self.Lumberjack.hit = 0
@@ -197,7 +197,8 @@ class Chopping(State):
             self.Lumberjack.update()
 
             if self.Lumberjack.hit == 4:
-                self.Lumberjack.destination = Vector2(self.Lumberjack.location)
+                self.Lumberjack.destination = vector2.Vector2(
+                    self.Lumberjack.location)
                 self.Lumberjack.image = self.Lumberjack.start
                 self.Lumberjack.image.set_colorkey((255, 0, 255))
 
