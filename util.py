@@ -1,5 +1,4 @@
-from math import *
-
+import math
 
 def format_number(n, accuracy=6):
     """Formats a number in a friendly manner
@@ -42,12 +41,12 @@ def saturate(value, low, high):
 
 def is_power_of_2(n):
     """Returns True if a value is a power of 2."""
-    return log(n, 2) % 1.0 == 0.0
+    return math.log(n, 2) % 1.0 == 0.0
 
 
 def next_power_of_2(n):
     """Returns the next power of 2 that is >= n"""
-    return int(2 ** ceil(log(n, 2)))
+    return int(2 ** math.ceil(math.log(n, 2)))
 
 if __name__ == "__main__":
     print list(xrange2d(xrange(3), xrange(3)))

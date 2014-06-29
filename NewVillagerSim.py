@@ -51,7 +51,7 @@ def run():
     if FULL_ON:
         screen = pygame.display.set_mode(
             SCREEN_SIZE,
-            pygame.locals.FULLSCREEN | pygame.locals.HWSURFACE, 32)
+            pygame.FULLSCREEN | pygame.HWSURFACE, 32)
     else:
         screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)
 

@@ -1,30 +1,25 @@
-from StateMachine import *
-from World import *
-from GameEntity import *
-from vector2 import *
+import GameEntity
+import StateMachine
 
-from random import *
-
-
-class Tree(GameEntity):
+class Tree(GameEntity.GameEntity):
 
     def __init__(self, world, image):
-        GameEntity.__init__(self, world, "Tree", image)
+        GameEntity.GameEntity.__init__(self, world, "Tree", image)
 
 
-class Sapling(GameEntity):
+class Sapling(GameEntity.GameEntity):
 
     def __init__(self, world, image):
-        GameEntity.__init__(self, world, "Sapling", image)
+        GameEntity.GameEntity.__init__(self, world, "Sapling", image)
         growing_state = Growing(self)
         self.brain.add_state(growing_state)
         self.ttg = 30.0
 
 
-class Growing(State):
+class Growing(StateMachine.State):
 
     def __init__(self, Sapling):
-        State.__init__(self, "Growing")
+        StateMachine.State.__init__(self, "Growing")
         self.Sapling = Sapling
 
     def check_conditions(self):

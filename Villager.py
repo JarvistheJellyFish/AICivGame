@@ -1,20 +1,12 @@
-from StateMachine import *
-from World import *
-from GameEntity import *
-from vector2 import *
-from Entities import *
-
-from Tile import *
-
-from random import *
-
+import GameEntity
+import StateMachine
 blank_grass_img = pygame.image.load("Images/Tiles/MinecraftGrass.png")
 
 
-class Villager(GameEntity):
+class Villager(GameEntity.GameEntity):
 
     def __init__(self, world, image):
-        GameEntity.__init__(self, world, "Villager", image)
+        GameEntity.GameEntity.__init__(self, world, "Villager", image)
         exploring_state = Villager_Exploring(self)
         delivering_state = Villager_Delivering(self)
         chopping_state = Villager_Chopping(self)
@@ -28,10 +20,10 @@ class Villager(GameEntity):
         self.carrying = None
 
 
-class Villager_sleeping(State):
+class Villager_sleeping(StateMachine.State):
 
     def __init__(self, Villager):
-        State.__init__(self, "sleeping")
+        StateMachine.State.__init__(self, "sleeping")
         self.Villager = Villager
 
     def check_conditions(self):
@@ -46,10 +38,10 @@ class Villager_sleeping(State):
             )
 
 
-class Villager_Exploring(State):
+class Villager_Exploring(StateMachine.State):
 
     def __init__(self, Villager):
-        State.__init__(self, "exploring")
+        StateMachine.State.__init__(self, "exploring")
         self.Villager = Villager
 
     def random_dest(self):
@@ -85,11 +77,10 @@ class Villager_Exploring(State):
         self.Villager.speed = 100.
 
 
-class Villager_Chopping(State):
+class Villager_Chopping(StateMachine.State):
 
     def __init__(self, Villager):
-
-        State.__init__(self, "chopping")
+        StateMachine.State.__init__(self, "chopping")
         self.Villager = Villager
         self.Tree_id = None
 
@@ -133,11 +124,11 @@ class Villager_Chopping(State):
             return "exploring"
 
 
-class Villager_Delivering(State):
+class Villager_Delivering(StateMachine.State):
 
     def __init__(self, Villager):
 
-        State.__init__(self, "delivering")
+        StateMachine.State.__init__(self, "delivering")
         self.Villager = Villager
 
     def check_conditions(self):

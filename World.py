@@ -69,17 +69,17 @@ class World(object):
         self.mapGenerator = mapGen()
 
         self.background_over = pygame.Surface((1600, 900),
-            pygame.locals.HWSURFACE)
+            pygame.HWSURFACE)
         self.background_over.set_alpha(128)
         self.background_over.fill((0, 0, 20, 128))
 
-        self.full_surface = pygame.Surface(self.size, pygame.locals.HWSURFACE)
+        self.full_surface = pygame.Surface(self.size, pygame.HWSURFACE)
 
         self.clock = pygame.time.Clock()
 
         print self.size
         self.background = pygame.Surface(
-            (self.size[0], self.size[1]), pygame.locals.HWSURFACE)
+            (self.size[0], self.size[1]), pygame.HWSURFACE)
         self.background.fill((255, 255, 255))
 
         self.font = font
@@ -137,7 +137,7 @@ class World(object):
         self.background_pos = vector2.Vector2(self.ss[0] / 5.0, 0)
         self.mapGenerator = mapGen()
 
-        self.full_surface = pygame.Surface(self.size, pygame.locals.HWSURFACE)
+        self.full_surface = pygame.Surface(self.size, pygame.HWSURFACE)
 
         self.clock_degree = 0
         #Used for the clock
