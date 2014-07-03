@@ -343,7 +343,7 @@ class World(object):
         if buildable:
             Build = buildable[1]
             Build.location = self.get_tile_pos(pos - self.background_pos) * 32
-            print "LOC: ", Build.location
+            print "add_building LOC: ", building, Build.location
             self.add_entity(Build)
             self.buildings[building] = Build
             self.BuildingQueue.append(Build)
@@ -357,7 +357,7 @@ class World(object):
         if buildable:
             Build = buildable[1]
             Build.location = pos
-            print "LOC2: ", Build.location
+            print "buildable LOC2: ", building, Build.location
             self.add_entity(Build)
             self.buildings[building] = Build
             return 1
@@ -414,16 +414,19 @@ class World(object):
                     elif building == "Dock":
                         if test_tile.buildable_w:
                             water += 1
-                        else:
+                        elif test_tile.buildable:
                             land += 1
                 except IndexError:
+                    print 'IndexError'
                     return 0
 
-        if building == "Dock":
+        if building == "Dock" and not built:
             if water >= 1 and land <= 2 and land > 0:
+                #print ('buildable', water, land)
                 buildable = 1
                 return 1, Build
             else:
+                #print ('not buildable', water, land)
                 buildable = 0
                 return 0
 
@@ -472,7 +475,7 @@ class World(object):
                     darkness = pygame.Surface((32, 32))
                     darkness.set_alpha(old_tile.darkness)
 
-                    new_tile = TreePlantedTile_w(self, WithTree_img)
+                    new_tile = Tile.TreePlantedTile_w(self, WithTree_img)
 
                     new_tile.darkness = old_tile.darkness
 
